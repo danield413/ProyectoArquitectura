@@ -2,46 +2,49 @@ import { useCallback, useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { MAR } from './components/MAR'
+import { PC } from './components/PC'
+import { UC } from './components/UC'
+import { MBR } from './components/MBR'
+import { IR } from './components/IR'
+import { BancoRegistros } from './components/BancoRegistros'
+import { ALU } from './components/ALU'
+import { BusSistema } from './components/BusSistema'
+import { Memoria } from './components/Memoria'
+import { IO } from './components/IO'
 
 const App = () => {
 
-  //* Estado inicial en 0
-  //* cuando yo de click el estado inicial se aumenta en 1
-  //* HOOKS --> PROGRAMACIÓN FUNCIONAL
-  //*   variable    funcion           estado inicial
-  const [arreglo, setArreglo] = useState([])
-
-  //* useState --> guarda el estado
-  //* useUseEffect --> se ejecuta despues de que el componente se renderiza
-  //* useCallback --> guarda funciones
-  //* useMemo --> guarda valores computados
-  //* useForm --> guarda el estado de un formulario
-  //* useRef  --> guarda una referencia a un elemento del DOM
-  //* useReducer
-  //* useContext
-
-  const handleClick = () => {
-    setArreglo([...arreglo, "hola"])
-  }
-  
   return (
-    <>
-    <button onClick={handleClick}>
-      Cambiar
-    </button>
+    <div className="grid">
+      <div style={{ padding: '10px 20px'}}>
+        <h2 style={{ marginBottom: '10px' }}>Instrucciones</h2>
+        <textarea className='instrucciones'></textarea>
+      </div>
+      <div className='contenedor'>
+        <div className='superior'>
+          <ALU />
+          <UC />
+          <PC />
 
-    <p>
-      {
-        arreglo.map((item, index) => {
-          return (
-            <div key={index}>
-              {item}
-            </div>
-          )
-        })
-      }
-    </p>
-    </>
+        </div>
+        <div className='centro'>
+          <MAR />
+          <MBR />
+          <IR />
+        </div>
+        <div className='inferior'>
+          <BancoRegistros />
+        </div>
+      </div>
+      <div>
+        <BusSistema />
+        <IO />
+      </div>
+      <div>
+        <Memoria />
+      </div>
+    </div>
   )
 }
 
