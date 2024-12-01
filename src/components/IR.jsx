@@ -2,6 +2,6 @@ import React from 'react'
 
 export const IR = () => {
   return (
-    <div className='ir'>Ir</div>
+    <div className='ir'>IR</div>
   )
 }

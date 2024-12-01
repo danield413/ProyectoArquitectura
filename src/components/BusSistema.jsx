@@ -4,11 +4,11 @@ export const BusSistema = () => {
   return (
     <div className='bus-sistema'>
 
-      <div className="direcciones">Dir</div>
+      <div className="direcciones"></div>
 
-      <div className="datos">Data</div>
+      <div className="datos"></div>
 
-      <div className="control">Control</div>
+      <div className="control"></div>
 
     </div>
   )

@@ -12,37 +12,44 @@ import { ALU } from './components/ALU'
 import { BusSistema } from './components/BusSistema'
 import { Memoria } from './components/Memoria'
 import { IO } from './components/IO'
+import { Instructions } from './components/Instructions'
 
 const App = () => {
 
   return (
-    <div className="grid">
-      <div style={{ padding: '10px 20px'}}>
-        <h2 style={{ marginBottom: '10px' }}>Instrucciones</h2>
-        <textarea className='instrucciones'></textarea>
-      </div>
-      <div className='contenedor'>
-        <div className='superior'>
-          <ALU />
-          <UC />
-          <PC />
-
+    <div className='grid-principal'>
+      <div className="grid">
+        <div style={{ padding: '10px 20px' }}>
+          <h2 style={{ marginBottom: '10px' }}>Instrucciones</h2>
+          <textarea className='instrucciones'></textarea>
         </div>
-        <div className='centro'>
-          <MAR />
-          <MBR />
-          <IR />
+        <div className='contenedor'>
+          <div className='procesador'>
+            <div className='izquierda'>
+              <ALU />
+              <BancoRegistros />
+            </div>
+            <div className='derecha'>
+              <UC />
+              <PC />
+              <MAR />
+              <MBR />
+              <IR />
+            </div>
+          </div>
+          <div className="es">
+            <IO />
+          </div>
         </div>
-        <div className='inferior'>
-          <BancoRegistros />
+        <div>
+          <BusSistema />
+        </div>
+        <div>
+          <Memoria />
         </div>
       </div>
-      <div>
-        <BusSistema />
-        <IO />
-      </div>
-      <div>
-        <Memoria />
+      <div className="set">
+        <Instructions />
       </div>
     </div>
   )
