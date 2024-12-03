@@ -19,9 +19,18 @@ const App = () => {
   return (
     <div className='grid-principal'>
       <div className="grid">
-        <div style={{ padding: '10px 20px' }}>
-          <h2 style={{ marginBottom: '10px' }}>Instrucciones</h2>
-          <textarea className='instrucciones'></textarea>
+        <div style={{ padding: '10px 20px', display: 'grid', gridTemplateRows: '70% 30%', height: '90vh' }}>
+          <div>
+            <h2 style={{ marginBottom: '10px' }}>Instrucciones</h2>
+            <textarea className='instrucciones'></textarea>
+          </div>
+          <div>
+            <button className='boton add'>ADD</button>
+            <button className='boton move'>MOVE</button>
+            <button className='boton sub'>SUB</button>
+            <button className='boton jmp'>JMP</button>
+
+          </div>
         </div>
         <div className='contenedor'>
           <div className='procesador'>
@@ -48,9 +57,9 @@ const App = () => {
           <Memoria />
         </div>
       </div>
-      <div className="set">
+      {/* <div className="set">
         <Instructions />
-      </div>
+      </div> */}
     </div>
   )
 }

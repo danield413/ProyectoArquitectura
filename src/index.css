@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh;
+  height: 300px;
   width: 100%;
   background-color: #222222;
   color: white;
@@ -21,7 +21,8 @@
   grid-template-columns: 100%;
   grid-template-rows: 90% 10%;
   background-color: #222222;
-
+  min-height: 100vh;
+  width: 100vw;
 }
 
 .grid {
@@ -40,7 +41,7 @@
 
 .contenedor {
   display:grid;
-  grid-template-rows: 45% 55%;
+  grid-template-rows: 70% 30%;
   border: 3px solid 2222;
   height: 80vh;
 }
@@ -54,6 +55,7 @@
   border: 3px solid rgb(137, 195, 237);
   border-radius: 10px;
   padding-bottom: 10px;
+  height:max-content;
 }
 
 .pc, .mar, .uc, .mbr, .ir, .alu {
@@ -139,11 +141,13 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  border: 3px solid blue;
+  border: 3px solid rgb(0, 88, 252);
   justify-content: center;
   align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
+  border-radius: 10px;
+  margin-top: 20px;
 }
 .memoria {
   border: 3px solid blue;
@@ -207,4 +211,41 @@
   cursor: grab;
 }
 
+.boton {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  border: 3px solid transparent;
+  transition: .3s ease-in-out;
+}
 
+.boton:hover {
+  cursor: pointer;
+  background-color: rgb(255, 0, 98);
+  color: #fff;
+  border: 3px solid rgb(0, 0, 0);
+  transition: .3s ease-in-out;
+}
+
+.add {
+  background-color: #8e44ad;
+  color: white;
+}
+
+.move {
+  background-color: #3498db;
+  color: white;
+}
+
+.sub {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.jmp {
+  background-color: #f39c12;
+  color: white;
+}
