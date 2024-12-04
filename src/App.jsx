@@ -14,9 +14,10 @@ import { Memoria } from './components/Memoria'
 import { IO } from './components/IO'
 import { Instructions } from './components/Instructions'
 import Swal from 'sweetalert2'
+import Xarrow from 'react-xarrows'
 
 const App = () => {
-
+  const aluRef = useRef(null);
   const [instructions, setInstructions] = useState([])
 
   const handleAdd = () => {
@@ -96,11 +97,15 @@ const App = () => {
         <div className='contenedor'>
           <div className='procesador'>
             <div className='izquierda'>
-              <ALU />
+              <ALU ref={aluRef} />
               <BancoRegistros />
             </div>
+           {true && <Xarrow
+                start={aluRef} //can be react ref
+                end="uc" //or an id
+            />}
             <div className='derecha'>
-              <UC />
+              <UC  />
               <PC />
               <MAR />
               <MBR />

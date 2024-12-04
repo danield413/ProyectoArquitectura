@@ -4,6 +4,6 @@
 
 export const UC = () => {
   return (
-    <div className="uc">UC</div>
+    <div id="uc" className="uc">UC</div>
   )
 }

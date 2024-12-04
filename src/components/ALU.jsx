@@ -8,8 +8,12 @@
   * 7. Or
   * 
 */
-export const ALU = () => {
+
+import React, {forwardRef, useRef} from "react";
+import Xarrow from "react-xarrows";
+
+export const ALU = forwardRef((props, ref) => {
   return (
-    <div className="alu"></div>
+    <div ref={ref} className="alu"></div>
   )
-}
+});
