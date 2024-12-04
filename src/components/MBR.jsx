@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 
-export const MBR = () => {
+export const MBR = forwardRef((props, ref) => {
   return (
-    <div className='mbr'>MBR</div>
+    <div id="mbr" ref={ref} className='mbr'>MBR</div>
   )
-}
+})

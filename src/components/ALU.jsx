@@ -14,6 +14,6 @@ import Xarrow from "react-xarrows";
 
 export const ALU = forwardRef((props, ref) => {
   return (
-    <div ref={ref} className="alu"></div>
+    <div id="alu" ref={ref} className="alu"></div>
   )
 });

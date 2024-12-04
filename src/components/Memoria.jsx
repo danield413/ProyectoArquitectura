@@ -1,9 +1,12 @@
-export const Memoria = () => {
+import { forwardRef } from "react"
+
+export const Memoria = forwardRef((props, ref) => {
   const celdas = new Array(32).fill(0);
   const filas = 4;
 
   return (
-    <div className="memoria-general"> Memory
+    <div id="memoria" className="memoria-general" ref={ref}> 
+    Memory
       <div className="memoria">Address
         {Array.from({ length: filas }).map((_, filaIndex) => (
           <div key={filaIndex} className="memoria-fila">
@@ -32,4 +35,4 @@ export const Memoria = () => {
       </div>
     </div>
   );
-};
+})

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -9,16 +9,33 @@ import { MBR } from './components/MBR'
 import { IR } from './components/IR'
 import { BancoRegistros } from './components/BancoRegistros'
 import { ALU } from './components/ALU'
-import { BusSistema } from './components/BusSistema'
 import { Memoria } from './components/Memoria'
 import { IO } from './components/IO'
-import { Instructions } from './components/Instructions'
 import Swal from 'sweetalert2'
 import Xarrow from 'react-xarrows'
 
 const App = () => {
-  const aluRef = useRef(null);
+  
   const [instructions, setInstructions] = useState([])
+  const [start, setStart] = useState(null)
+  const [end, setEnd] = useState(null)
+
+  //referencias a los elementos JSX
+  const aluRef = useRef(null);
+  const mbrRef = useRef(null);
+  const marRef = useRef(null);
+  const pcRef = useRef(null);
+  const irRef = useRef(null);
+  const ucRef = useRef(null);
+  const ioRef = useRef(null);
+  const bancoRef = useRef(null);
+  const memoriaRef = useRef(null);
+  const busDireccionesRef = useRef(null);
+  const busDatosRef = useRef(null);
+  const busControlRef = useRef(null);
+
+
+
 
   const handleAdd = () => {
     //alerta con formulario
@@ -62,6 +79,48 @@ const App = () => {
 
   }
 
+  useEffect(() => {
+
+    let pasos = [
+      {
+        inicio: 'pc',
+        fin: 'mar'
+      },
+      {
+        inicio: 'mar',
+        fin: 'memoria'
+      },
+      {
+        inicio: 'memoria',
+        fin: 'mbr'
+      },
+      {
+        inicio: 'mbr',
+        fin: 'ir'
+      }
+    ]
+ 
+    pasos.forEach((paso, index) => {
+      setTimeout(() => {
+        setStart(paso.inicio)
+        setEnd(paso.fin)
+      }, index * 3000)
+    })
+
+
+  }, [])
+
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const ejecutarConRetraso = async () => {
+    console.log("Inicio");
+    
+    // Esperar 3 segundos
+    await delay(3000);
+    
+    console.log("Se ejecutó después de 3 segundos");
+  };
+
   return (
     <div className='grid-principal'>
       <div className="grid">
@@ -98,34 +157,33 @@ const App = () => {
           <div className='procesador'>
             <div className='izquierda'>
               <ALU ref={aluRef} />
-              <BancoRegistros />
+              <BancoRegistros ref={bancoRef}/>
             </div>
-           {true && <Xarrow
-                start={aluRef} //can be react ref
-                end="uc" //or an id
-            />}
             <div className='derecha'>
-              <UC  />
+              <UC />
               <PC />
-              <MAR />
-              <MBR />
-              <IR />
+              <MAR ref={marRef}/>
+              <MBR ref={mbrRef}/>
+              <IR ref={irRef}/>
             </div>
           </div>
           <div className="es">
-            <IO />
+            <IO ref={ioRef} id="io"/>
           </div>
         </div>
-        <div>
-          <BusSistema />
+        <div className='bus-sistema'>
+            <div className="direcciones" ref={busDireccionesRef}> </div>
+            <div className="datos" ref={busDatosRef}></div>
+            <div className="control" ref={busControlRef}></div>
         </div>
         <div>
-          <Memoria />
+          <Memoria ref={memoriaRef}/>
         </div>
       </div>
-      {/* <div className="set">
-        <Instructions />
-      </div> */}
+      <Xarrow
+            start={start} //can be react ref
+            end={end} //or an id
+        />
     </div>
   )
 }

@@ -3,8 +3,10 @@
 * Simulamos dispositivos de entrada y salida de datos.
 */
 
-export const IO = () => {
+import { forwardRef } from "react"
+
+export const IO = forwardRef((props, ref) => {
   return (
-    <div className='io'>IO</div>
+    <div id="io" ref={ref} className='io'>IO</div>
   )
-}
+})

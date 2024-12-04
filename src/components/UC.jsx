@@ -2,8 +2,10 @@
 * Dirige el flujo de datos y controla el ciclo de instrucciones
 */
 
-export const UC = () => {
+import { forwardRef } from "react"
+
+export const UC = forwardRef((props, ref) => {
   return (
-    <div id="uc" className="uc">UC</div>
+    <div id="uc" ref={ref} id="uc" className="uc">UC</div>
   )
-}
+})

@@ -2,8 +2,10 @@
 * Mantiene la dirección de la estructura actual
  */
 
-export const PC = () => {
+import { forwardRef } from "react"
+
+export const PC = forwardRef((props, ref) => {
   return (
-    <div className="pc" >PC</div>
+    <div id="pc" ref={ref} className="pc" >PC</div>
   )
-}
+})
