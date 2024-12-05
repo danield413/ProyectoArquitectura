@@ -5,7 +5,7 @@
 import { forwardRef } from "react"
 
  export const BancoRegistros = forwardRef((props, ref) => {
-  const registros = ["AX", "AL", "BL", "CL", "AX", "AL", "BL", "CL", "AX", "AL"]; // Nombres de los registros
+  const registros = ["AX", "AL", "BL", "CL", "IP", "SP", "SR", "DL", "AD", "AR"]; // Nombres de los registros
 
   return (
     <div id="banco" className="banco-registros" ref={ref}>
