@@ -92,6 +92,7 @@
 
 .banco-registros {
   width: 90%;
+  height: 180px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -104,8 +105,8 @@
 }
 
 .registro {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
   text-align: center;
   line-height: 40px;
   border: 1px solid #8e44ad;
@@ -162,6 +163,16 @@
   text-align: center;
 }
 
+.memoriagrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px; /* Espaciado entre celdas */
+  justify-content: center; /* Centrar horizontalmente las celdas */
+  padding: 10px;
+  border-radius: 10px;
+  border: 3px solid #00ffaa;
+}
+
 .memoria-fila {
   display: flex; /* Cada fila es un contenedor flexible */
   gap: 5px; /* Espaciado entre celdas de la fila */
@@ -169,10 +180,11 @@
 }
 
 .memoria-celda {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 40px;
   border: 1px solid #ccc;
   background-color: #222;
+  border-radius: 5px;
   text-align: center;
   line-height: 50px;
   font-size: 12px;
@@ -248,4 +260,24 @@
 .jmp {
   background-color: #f39c12;
   color: white;
+}
+
+.load {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.neg {
+  background-color: #5522b6;
+  color: white;
+}
+
+.dec {
+  background-color: #0ff1b8;
+  color: black;
+}
+
+.cmp {
+  background-color: #f10f93;
+  color: black;
 }

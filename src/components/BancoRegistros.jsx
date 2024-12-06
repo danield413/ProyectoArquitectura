@@ -3,14 +3,34 @@
  */
 
 import { forwardRef } from "react"
+import { useStore } from "../hooks/useStore"
 
  export const BancoRegistros = forwardRef((props, ref) => {
-  const registros = ["AX", "AL", "BL", "CL", "IP", "SP", "SR", "DL", "AD", "AR"]; // Nombres de los registros
+
+  const { state } = useStore();
+
+  const { registros } = state;
+
+  console.log(registros)
 
   return (
     <div id="banco" className="banco-registros" ref={ref}>
-      {registros.map((registro) => (
-        <div key={registro} className="registro">{registro}</div>
+      {registros.map((registro, index) => (
+        <div key={index} className="registro" style={{
+          display: 'grid', gridTemplateRows: '1fr 1fr'
+        }}>
+          <div>
+          <span style={{
+            fontSize: '0.8rem',
+            fontWeight: 'bold'
+          }}>{registro.nombre}</span>
+          </div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'start',
+          }}>{registro.valor}</div>
+          </div>
       ))}
     </div>
   );

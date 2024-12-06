@@ -1,37 +1,33 @@
 import { forwardRef } from "react"
+import { useStore } from "../hooks/useStore"
+import { Popover } from 'react-tiny-popover'
+import Elemento from "../components/memoria/Elemento"
 
 export const Memoria = forwardRef((props, ref) => {
-  const celdas = new Array(32).fill(0);
-  const filas = 4;
+
+  const { state } = useStore();
+  const { direcciones, datos } = state;
 
   return (
     <div id="memoria" className="memoria-general" ref={ref}> 
     Memory
-      <div className="memoria">Address
-        {Array.from({ length: filas }).map((_, filaIndex) => (
-          <div key={filaIndex} className="memoria-fila">
-            {celdas
-              .slice(filaIndex * (celdas.length / filas), (filaIndex + 1) * (celdas.length / filas))
-              .map((_, celdaIndex) => (
-                <div key={celdaIndex} className="memoria-celda">
-                  {filaIndex * (celdas.length / filas) + celdaIndex}
-                </div>
-              ))}
-          </div>
-        ))}
+    <h5>Direcciones</h5>
+      <div className="memoriagrid">
+        {
+          direcciones.map((direccion, index) => (
+            <>
+              <Elemento key={index} data={direccion} />
+            </>
+          ))
+        }
       </div>
-      <div className="memoria">Data
-        {Array.from({ length: filas }).map((_, filaIndex) => (
-          <div key={filaIndex} className="memoria-fila">
-            {celdas
-              .slice(filaIndex * (celdas.length / filas), (filaIndex + 1) * (celdas.length / filas))
-              .map((_, celdaIndex) => (
-                <div key={celdaIndex} className="memoria-celda">
-                  {filaIndex * (celdas.length / filas) + celdaIndex}
-                </div>
-              ))}
-          </div>
-        ))}
+      <h5>Datos</h5>
+      <div className="memoriagrid">
+        {
+          datos.map((dato, index) => (
+              <Elemento key={index} data={dato} />
+          ))
+        }
       </div>
     </div>
   );

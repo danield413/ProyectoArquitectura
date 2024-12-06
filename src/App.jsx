@@ -12,21 +12,14 @@ import { IO } from "./components/IO";
 import Swal from "sweetalert2";
 import Xarrow from "react-xarrows";
 import { ArcherContainer, ArcherElement } from "react-archer"
+import { useStore } from "./hooks/useStore"
 
-const registros = [
-  { nombre: 'AX', valor: 0 },
-  { nombre: 'AL', valor: 0 },
-  { nombre: 'BL', valor: 0 },
-  { nombre: 'CL', valor: 0 },
-  { nombre: 'IP', valor: 0 },
-  { nombre: 'SP', valor: 0 },
-  { nombre: 'SR', valor: 0 },
-  { nombre: 'DL', valor: 0 },
-  { nombre: 'AD', valor: 0 },
-  { nombre: 'AR', valor: 0 }
-]
 
 const App = () => {
+
+  const { state, setState } = useStore();
+
+
   const [instructions, setInstructions] = useState([]);
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
@@ -45,6 +38,7 @@ const App = () => {
   const busDatosRef = useRef(null);
   const busControlRef = useRef(null);
 
+  //* ADD R1, R2 <-- direccionamiento por registros
   const handleAdd = () => {
     //alerta con formulario
     Swal.fire({
@@ -84,6 +78,7 @@ const App = () => {
     });
   };
 
+  //* SUB R1, R2 <-- direccionamiento por registros
   const handleSub = () => {
     Swal.fire({
       title: "SUB",
@@ -122,6 +117,7 @@ const App = () => {
     });
   };
 
+  //* ---
   const handleMove = () => {
     Swal.fire({
       title: "MOV",
@@ -160,8 +156,25 @@ const App = () => {
     });
   };
 
-
+  //* no tiene direccionamiento
   const handleJmp = () => {};
+
+  //* LOAD R1, VALOR <-- direccionamiento inmediato
+  const handleLoad = () => {};
+
+  //* NEG R1 <-- direccionamiento por registros
+  const handleNeg = () => {};
+
+  //*---
+  const handleInc = () => {};
+
+  //* ---
+  const handleDec = () => {};
+
+  //* ---
+  const handleCmp = () => {};
+
+
 
   const realizarSecuencia = (pasos) => {
 
@@ -174,29 +187,6 @@ const App = () => {
 
   }
 
-  useEffect(() => {
-    let pasos = [
-      {
-        inicio: "pc",
-        fin: "mar",
-      },
-      {
-        inicio: "mar",
-        fin: "memoria",
-      },
-      {
-        inicio: "memoria",
-        fin: "mbr",
-      },
-      {
-        inicio: "mbr",
-        fin: "ir",
-      },
-    ];
-
-    realizarSecuencia(pasos);
-  }, []);
-  
   return (
     <div className="grid-principal">
       <div className="grid">
@@ -226,19 +216,46 @@ const App = () => {
               ))}
             </div>
           </div>
-          <div>
-            <button className="boton add" onClick={handleAdd}>
-              ADD
-            </button>
-            <button className="boton move" onClick={handleMove}>
-              MOV
-            </button>
-            <button className="boton sub" onClick={handleSub}>
-              SUB
-            </button>
-            <button className="boton jmp" onClick={handleJmp}>
-              JMP
-            </button>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '10px'
+          }}>
+            <div>
+                <button className="boton load">
+                  LOAD
+                </button>
+                <button className="boton neg">
+                  NEG
+                </button>
+                <button className="boton move" onClick={handleMove}>
+                  MOV
+                </button>
+      
+                <button className="boton jmp" onClick={handleJmp}>
+                  JMP
+                </button>
+            </div>
+              <div>
+              <button className="boton add" onClick={handleAdd}>
+                ADD
+              </button>
+              <button className="boton sub" onClick={handleSub}>
+                SUB
+              </button>
+              <button className="boton inc">
+                INC
+              </button>
+              </div>
+              <div> 
+                <button className="boton dec">
+                  DEC
+                </button>
+                <button className="boton cmp">
+                  CMP
+                </button>
+
+              </div>
           </div>
         </div>
         <div className="contenedor">
