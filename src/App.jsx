@@ -18,7 +18,7 @@ import { useStore } from "./hooks/useStore"
 const App = () => {
 
   const { state, setState } = useStore();
-
+  const { registros } = state;
 
   const [instructions, setInstructions] = useState([]);
   const [start, setStart] = useState(null);
@@ -41,9 +41,17 @@ const App = () => {
   //* ADD R1, R2 <-- direccionamiento por registros
   const handleAdd = () => {
     //alerta con formulario
+
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
+
     Swal.fire({
       title: "ADD",
-      html: '<input id="swal-input1" class="swal2-input" placeholder="R1">'
+      html:
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
       + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
@@ -80,9 +88,18 @@ const App = () => {
 
   //* SUB R1, R2 <-- direccionamiento por registros
   const handleSub = () => {
+    //alerta con formulario
+
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
+
     Swal.fire({
       title: "SUB",
-      html: '<input id="swal-input1" class="swal2-input" placeholder="R1">'
+      html:
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
       + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
@@ -160,10 +177,98 @@ const App = () => {
   const handleJmp = () => {};
 
   //* LOAD R1, VALOR <-- direccionamiento inmediato
-  const handleLoad = () => {};
+  const handleLoad = () => {
+    //alerta con formulario
+
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
+
+    Swal.fire({
+      title: "LOAD",
+      html:
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
+      + '<input id="swal-input2" type="number" class="swal2-input" placeholder="Valor">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] === "") {
+          return;
+        }
+
+        //si los registros no existen
+        if (!registros.find(reg => reg.nombre === result.value[0])) {
+          Swal.fire({
+            title: "Error",
+            text: "El registro no existe",
+            icon: "error",
+          });
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "LOAD",
+          value: result.value[0] + ", " + result.value[1],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+  };
 
   //* NEG R1 <-- direccionamiento por registros
-  const handleNeg = () => {};
+  const handleNeg = () => {
+    //alerta con formulario
+
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
+
+    Swal.fire({
+      title: "ADD",
+      html:
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] === "") {
+          return;
+        }
+
+        //si los registros no existen
+        if (!registros.find(reg => reg.nombre === result.value[0])) {
+          Swal.fire({
+            title: "Error",
+            text: "El registro no existe",
+            icon: "error",
+          });
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "NEG",
+          value: result.value[0],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+  };
 
   //*---
   const handleInc = () => {};
@@ -222,10 +327,14 @@ const App = () => {
             gap: '10px'
           }}>
             <div>
-                <button className="boton load">
+                <button className="boton load"
+                  onClick={handleLoad}
+                >
                   LOAD
                 </button>
-                <button className="boton neg">
+                <button className="boton neg"
+                  onClick={handleNeg}
+                >
                   NEG
                 </button>
                 <button className="boton move" onClick={handleMove}>
