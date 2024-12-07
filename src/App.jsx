@@ -174,7 +174,32 @@ const App = () => {
   };
 
   //* no tiene direccionamiento
-  const handleJmp = () => {};
+  const handleJmp = () => {
+    //* indica el comienzo
+    Swal.fire({
+      title: "JMP",
+      html: '<input id="swal-input1" type="number" class="swal2-input" placeholder="Dirección">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] > 31) {
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "JMP",
+          value: result.value[0],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+  };
 
   //* LOAD R1, VALOR <-- direccionamiento inmediato
   const handleLoad = () => {
@@ -270,18 +295,142 @@ const App = () => {
     });
   };
 
-  //*---
-  const handleInc = () => {};
+  //* direccionamiento por registro
+  const handleInc = () => {
 
-  //* ---
-  const handleDec = () => {};
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
 
-  //* ---
-  const handleCmp = () => {};
+    Swal.fire({
+      title: "INC",
+      html: 
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] === "") {
+          return;
+        }
+
+        //si los registros no existen
+        if (!registros.find(reg => reg.nombre === result.value[0])) {
+          Swal.fire({
+            title: "Error",
+            text: "El registro no existe",
+            icon: "error",
+          });
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "INC",
+          value: result.value[0],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+
+  };
+
+  //* direccionamiento por registro
+  const handleDec = () => {
+
+    let registrosDisponibles = ''
+    registros.forEach(reg => {
+      registrosDisponibles += reg.nombre + ' '
+    })
+
+    Swal.fire({
+      title: "DEC",
+      html: 
+      'Registros disponibles: ' + registrosDisponibles + '<br>' +
+      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] === "") {
+          return;
+        }
+
+        //si los registros no existen
+        if (!registros.find(reg => reg.nombre === result.value[0])) {
+          Swal.fire({
+            title: "Error",
+            text: "El registro no existe",
+            icon: "error",
+          });
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "DEC",
+          value: result.value[0],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+  };
+
+  //* direccionamiento por registro (o inmediato <--falta)
+  const handleCmp = () => {
+    Swal.fire({
+      title: "CMP",
+      html: '<input id="swal-input1" class="swal2-input" placeholder="R1">'
+      + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value
+        ];
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (result.value[0] === "" || result.value[1] === "") {
+          return;
+        }
+
+        //si los registros no existen
+        if (!registros.find(reg => reg.nombre === result.value[0]) || !registros.find(reg => reg.nombre === result.value[1])) {
+          Swal.fire({
+            title: "Error",
+            text: "Los registros no existen",
+            icon: "error",
+          });
+          return;
+        }
+
+        const newInstruction = {
+          id: instructions.length + 1,
+          tipo: "CMP",
+          value: result.value[0] + ", " + result.value[1],
+        };
+        setInstructions([...instructions, newInstruction]);
+      }
+    });
+
+  };
 
 
 
   const realizarSecuencia = (pasos) => {
+
+    console.log("instructions", instructions);
 
     pasos.forEach((paso, index) => {
       setTimeout(() => {
@@ -305,6 +454,7 @@ const App = () => {
         >
           <div>
             <h2 style={{ marginBottom: "10px" }}>Instrucciones</h2>
+            <button className="ejecutar" onClick={realizarSecuencia}>Ejecutar</button>
             <div
               style={{
                 border: "3px solid #ff5733",
@@ -352,15 +502,21 @@ const App = () => {
               <button className="boton sub" onClick={handleSub}>
                 SUB
               </button>
-              <button className="boton inc">
+              <button className="boton inc"
+                onClick={handleInc}
+              >
                 INC
               </button>
               </div>
               <div> 
-                <button className="boton dec">
+                <button className="boton dec"
+                  onClick={handleDec}  
+                >
                   DEC
                 </button>
-                <button className="boton cmp">
+                <button className="boton cmp"
+                  onClick={handleCmp}
+                >
                   CMP
                 </button>
 
