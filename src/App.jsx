@@ -15,7 +15,7 @@ import { useStore } from "./hooks/useStore";
 
 const codops = [
   { nombre: "LOAD", valor: "0000" },
-  { nombre: "NEG", valor: "0001" },
+  { nombre: "MPY", valor: "0001" },
   { nombre: "MOV", valor: "0010" },
   { nombre: "JMP", valor: "0011" },
   { nombre: "ADD", valor: "0100" },
@@ -279,8 +279,8 @@ const App = () => {
     });
   };
 
-  //* NEG R1 <-- direccionamiento por registros
-  const handleNeg = () => {
+  //* MPY R1 R2 <-- direccionamiento por registros
+  const handleMpy = () => {
     //alerta con formulario
 
     let registrosDisponibles = "";
@@ -289,27 +289,34 @@ const App = () => {
     });
 
     Swal.fire({
-      title: "ADD",
+      title: "MPY",
       html:
         "Registros disponibles: " +
         registrosDisponibles +
         "<br>" +
-        '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
-        return [document.getElementById("swal-input1").value];
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+        ];
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.value[0] === "") {
+        if (result.value[0] === "" || result.value[1] === "") {
           return;
         }
 
         //si los registros no existen
-        if (!registros.find((reg) => reg.nombre === result.value[0])) {
+        if (
+          !registros.find((reg) => reg.nombre === result.value[0]) ||
+          !registros.find((reg) => reg.nombre === result.value[1])
+        ) {
           Swal.fire({
             title: "Error",
-            text: "El registro no existe",
+            text: "Los registros no existen",
             icon: "error",
           });
           return;
@@ -317,8 +324,8 @@ const App = () => {
 
         const newInstruction = {
           id: instructions.length + 1,
-          tipo: "NEG",
-          value: result.value[0],
+          tipo: "MPY",
+          value: result.value[0] + ", " + result.value[1],
         };
         setInstructions([...instructions, newInstruction]);
       }
@@ -487,7 +494,28 @@ const App = () => {
 
         t++;
       }
-      if (tipo === "NEG") {
+      if (tipo === "MPY") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor;
+
+        const registros = instrucion.value.split(",");
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const registro2 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[1].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1} ${registro2}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
       }
       if (tipo === "MOV") {
       }
@@ -497,9 +525,9 @@ const App = () => {
         //* direccionamiento por registros
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
-        ).valor
+        ).valor;
 
-        const registros = instrucion.value.split(",")
+        const registros = instrucion.value.split(",");
 
         const registro1 = identificadoresRegistros.find(
           (reg) => reg.nombre === registros[0].trim()
@@ -520,9 +548,9 @@ const App = () => {
         //* direccionamiento por registros
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
-        ).valor
+        ).valor;
 
-        const registros = instrucion.value.split(",")
+        const registros = instrucion.value.split(",");
 
         const registro1 = identificadoresRegistros.find(
           (reg) => reg.nombre === registros[0].trim()
@@ -543,9 +571,9 @@ const App = () => {
         //* direccionamiento por registros
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
-        ).valor
+        ).valor;
 
-        const registros = instrucion.value.split(",")
+        const registros = instrucion.value.split(",");
 
         const registro1 = identificadoresRegistros.find(
           (reg) => reg.nombre === registros[0].trim()
@@ -563,9 +591,9 @@ const App = () => {
         //* direccionamiento por registros
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
-        ).valor
+        ).valor;
 
-        const registros = instrucion.value.split(",")
+        const registros = instrucion.value.split(",");
 
         const registro1 = identificadoresRegistros.find(
           (reg) => reg.nombre === registros[0].trim()
@@ -582,9 +610,9 @@ const App = () => {
         //* direccionamiento por registros
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
-        ).valor
+        ).valor;
 
-        const registros = instrucion.value.split(",")
+        const registros = instrucion.value.split(",");
 
         const registro1 = identificadoresRegistros.find(
           (reg) => reg.nombre === registros[0].trim()
@@ -603,8 +631,17 @@ const App = () => {
       }
     });
 
-    //* 2. ejecutar las instrucciones con el ciclo de instruccion 
+    //* 2. ejecutar las instrucciones con el ciclo de instruccion
 
+    /*
+    FI - Captar instrucción UC
+    DI - La instrucción la decodifica la UC
+    CO - Calcular la dirección del operando
+    FO - Captar el operando
+    EI - Ejecutar la instrucción lo hace la (ALU, CPU)
+    WO - Escribir la salida 
+    CI - Calcular siguiente instrucción
+    */
 
     // pasos.forEach((paso, index) => {
     //   setTimeout(() => {
@@ -657,8 +694,8 @@ const App = () => {
               <button className="boton load" onClick={handleLoad}>
                 LOAD
               </button>
-              <button className="boton neg" onClick={handleNeg}>
-                NEG
+              <button className="boton neg" onClick={handleMpy}>
+                MPY
               </button>
               <button className="boton move" onClick={handleMove}>
                 MOV
