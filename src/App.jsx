@@ -11,14 +11,30 @@ import { Memoria } from "./components/Memoria";
 import { IO } from "./components/IO";
 import Swal from "sweetalert2";
 import Xarrow from "react-xarrows";
-import { ArcherContainer, ArcherElement } from "react-archer"
-import { useStore } from "./hooks/useStore"
+import { useStore } from "./hooks/useStore";
 
+const codops = [
+  { nombre: "LOAD", valor: "0000" },
+  { nombre: "NEG", valor: "0001" },
+  { nombre: "MOV", valor: "0010" },
+  { nombre: "JMP", valor: "0011" },
+  { nombre: "ADD", valor: "0100" },
+  { nombre: "SUB", valor: "0101" },
+  { nombre: "INC", valor: "0110" },
+  { nombre: "DEC", valor: "0111" },
+  { nombre: "CMP", valor: "1000" },
+];
+
+const identificadoresRegistros = [
+  { nombre: "AL", valor: "00" },
+  { nombre: "BL", valor: "01" },
+  { nombre: "CL", valor: "10" },
+  { nombre: "DL", valor: "11" },
+];
 
 const App = () => {
-
-  const { state, setState } = useStore();
-  const { registros } = state;
+  const { state, setState, agregarInstruccion } = useStore();
+  const { registros, pc } = state;
 
   const [instructions, setInstructions] = useState([]);
   const [start, setStart] = useState(null);
@@ -42,22 +58,24 @@ const App = () => {
   const handleAdd = () => {
     //alerta con formulario
 
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "ADD",
       html:
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
-      + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value
+          document.getElementById("swal-input2").value,
         ];
       },
     }).then((result) => {
@@ -67,7 +85,10 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0]) || !registros.find(reg => reg.nombre === result.value[1])) {
+        if (
+          !registros.find((reg) => reg.nombre === result.value[0]) ||
+          !registros.find((reg) => reg.nombre === result.value[1])
+        ) {
           Swal.fire({
             title: "Error",
             text: "Los registros no existen",
@@ -90,22 +111,24 @@ const App = () => {
   const handleSub = () => {
     //alerta con formulario
 
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "SUB",
       html:
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
-      + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value
+          document.getElementById("swal-input2").value,
         ];
       },
     }).then((result) => {
@@ -115,7 +138,10 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0]) || !registros.find(reg => reg.nombre === result.value[1])) {
+        if (
+          !registros.find((reg) => reg.nombre === result.value[0]) ||
+          !registros.find((reg) => reg.nombre === result.value[1])
+        ) {
           Swal.fire({
             title: "Error",
             text: "Los registros no existen",
@@ -138,13 +164,14 @@ const App = () => {
   const handleMove = () => {
     Swal.fire({
       title: "MOV",
-      html: '<input id="swal-input1" class="swal2-input" placeholder="R1">'
-      + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+      html:
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value
+          document.getElementById("swal-input2").value,
         ];
       },
     }).then((result) => {
@@ -154,7 +181,10 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0]) || !registros.find(reg => reg.nombre === result.value[1])) {
+        if (
+          !registros.find((reg) => reg.nombre === result.value[0]) ||
+          !registros.find((reg) => reg.nombre === result.value[1])
+        ) {
           Swal.fire({
             title: "Error",
             text: "Los registros no existen",
@@ -181,9 +211,7 @@ const App = () => {
       html: '<input id="swal-input1" type="number" class="swal2-input" placeholder="Dirección">',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-        ];
+        return [document.getElementById("swal-input1").value];
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -205,22 +233,24 @@ const App = () => {
   const handleLoad = () => {
     //alerta con formulario
 
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "LOAD",
       html:
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">'
-      + '<input id="swal-input2" type="number" class="swal2-input" placeholder="Valor">',
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" type="number" class="swal2-input" placeholder="Valor">',
       focusConfirm: false,
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value
+          document.getElementById("swal-input2").value,
         ];
       },
     }).then((result) => {
@@ -230,7 +260,7 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0])) {
+        if (!registros.find((reg) => reg.nombre === result.value[0])) {
           Swal.fire({
             title: "Error",
             text: "El registro no existe",
@@ -253,21 +283,21 @@ const App = () => {
   const handleNeg = () => {
     //alerta con formulario
 
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "ADD",
       html:
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-        ];
+        return [document.getElementById("swal-input1").value];
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -276,7 +306,7 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0])) {
+        if (!registros.find((reg) => reg.nombre === result.value[0])) {
           Swal.fire({
             title: "Error",
             text: "El registro no existe",
@@ -297,22 +327,21 @@ const App = () => {
 
   //* direccionamiento por registro
   const handleInc = () => {
-
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "INC",
-      html: 
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+      html:
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-        ];
+        return [document.getElementById("swal-input1").value];
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -321,7 +350,7 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0])) {
+        if (!registros.find((reg) => reg.nombre === result.value[0])) {
           Swal.fire({
             title: "Error",
             text: "El registro no existe",
@@ -338,27 +367,25 @@ const App = () => {
         setInstructions([...instructions, newInstruction]);
       }
     });
-
   };
 
   //* direccionamiento por registro
   const handleDec = () => {
-
-    let registrosDisponibles = ''
-    registros.forEach(reg => {
-      registrosDisponibles += reg.nombre + ' '
-    })
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
 
     Swal.fire({
       title: "DEC",
-      html: 
-      'Registros disponibles: ' + registrosDisponibles + '<br>' +
-      '<input id="swal-input1" class="swal2-input" placeholder="R1">',
+      html:
+        "Registros disponibles: " +
+        registrosDisponibles +
+        "<br>" +
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-        ];
+        return [document.getElementById("swal-input1").value];
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -367,7 +394,7 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0])) {
+        if (!registros.find((reg) => reg.nombre === result.value[0])) {
           Swal.fire({
             title: "Error",
             text: "El registro no existe",
@@ -390,13 +417,14 @@ const App = () => {
   const handleCmp = () => {
     Swal.fire({
       title: "CMP",
-      html: '<input id="swal-input1" class="swal2-input" placeholder="R1">'
-      + '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+      html:
+        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
       focusConfirm: false,
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value
+          document.getElementById("swal-input2").value,
         ];
       },
     }).then((result) => {
@@ -406,7 +434,10 @@ const App = () => {
         }
 
         //si los registros no existen
-        if (!registros.find(reg => reg.nombre === result.value[0]) || !registros.find(reg => reg.nombre === result.value[1])) {
+        if (
+          !registros.find((reg) => reg.nombre === result.value[0]) ||
+          !registros.find((reg) => reg.nombre === result.value[1])
+        ) {
           Swal.fire({
             title: "Error",
             text: "Los registros no existen",
@@ -423,23 +454,165 @@ const App = () => {
         setInstructions([...instructions, newInstruction]);
       }
     });
-
   };
 
+  const realizarSecuencia = () => {
+    //* 1. cargar instrucciones en la memoria de direcciones
+    console.log("instrucciones", instructions);
 
+    let t = 0;
 
-  const realizarSecuencia = (pasos) => {
+    instructions.forEach((instrucion) => {
+      const { tipo } = instrucion;
 
-    console.log("instructions", instructions);
+      if (tipo === "LOAD") {
+        console.log("LOAD", t);
+        //* direccionamiento por registro
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor;
 
-    pasos.forEach((paso, index) => {
-      setTimeout(() => {
-        setStart(paso.inicio);
-        setEnd(paso.fin);
-      }, index * 6000);
+        //* obtener el valor del registro
+        let registro = identificadoresRegistros.find(
+          (reg) => reg.nombre === instrucion.value.split(",")[0]
+        ).valor;
+
+        //*convertir el valor a cargar a binario
+        let valorBinario = parseInt(instrucion.value.split(",")[1]).toString(2);
+
+        let valor = `${codopOperacion} ${registro} ${valorBinario}`;
+        let nombre = `${t}`;
+        // console.log(nombre, valor);
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
+      if (tipo === "NEG") {
+      }
+      if (tipo === "MOV") {
+      }
+      if (tipo === "JMP") {
+      }
+      if (tipo === "ADD") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor
+
+        const registros = instrucion.value.split(",")
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const registro2 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[1].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1} ${registro2}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
+      if (tipo === "SUB") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor
+
+        const registros = instrucion.value.split(",")
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const registro2 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[1].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1} ${registro2}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
+      if (tipo === "INC") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor
+
+        const registros = instrucion.value.split(",")
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
+
+      if (tipo === "DEC") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor
+
+        const registros = instrucion.value.split(",")
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
+      if (tipo === "CMP") {
+        //* direccionamiento por registros
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor
+
+        const registros = instrucion.value.split(",")
+
+        const registro1 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[0].trim()
+        ).valor;
+
+        const registro2 = identificadoresRegistros.find(
+          (reg) => reg.nombre === registros[1].trim()
+        ).valor;
+
+        const valor = `${codopOperacion} ${registro1} ${registro2}`;
+
+        let nombre = `${t}`;
+        agregarInstruccion(nombre, valor);
+
+        t++;
+      }
     });
 
-  }
+    //* 2. ejecutar las instrucciones con el ciclo de instruccion 
+
+
+    // pasos.forEach((paso, index) => {
+    //   setTimeout(() => {
+    //     setStart(paso.inicio);
+    //     setEnd(paso.fin);
+    //   }, index * 6000);
+    // });
+  };
 
   return (
     <div className="grid-principal">
@@ -454,7 +627,9 @@ const App = () => {
         >
           <div>
             <h2 style={{ marginBottom: "10px" }}>Instrucciones</h2>
-            <button className="ejecutar" onClick={realizarSecuencia}>Ejecutar</button>
+            <button className="ejecutar" onClick={realizarSecuencia}>
+              Ejecutar
+            </button>
             <div
               style={{
                 border: "3px solid #ff5733",
@@ -471,56 +646,47 @@ const App = () => {
               ))}
             </div>
           </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
-            gap: '10px'
-          }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: "10px",
+            }}
+          >
             <div>
-                <button className="boton load"
-                  onClick={handleLoad}
-                >
-                  LOAD
-                </button>
-                <button className="boton neg"
-                  onClick={handleNeg}
-                >
-                  NEG
-                </button>
-                <button className="boton move" onClick={handleMove}>
-                  MOV
-                </button>
-      
-                <button className="boton jmp" onClick={handleJmp}>
-                  JMP
-                </button>
+              <button className="boton load" onClick={handleLoad}>
+                LOAD
+              </button>
+              <button className="boton neg" onClick={handleNeg}>
+                NEG
+              </button>
+              <button className="boton move" onClick={handleMove}>
+                MOV
+              </button>
+
+              <button className="boton jmp" onClick={handleJmp}>
+                JMP
+              </button>
             </div>
-              <div>
+            <div>
               <button className="boton add" onClick={handleAdd}>
                 ADD
               </button>
               <button className="boton sub" onClick={handleSub}>
                 SUB
               </button>
-              <button className="boton inc"
-                onClick={handleInc}
-              >
+              <button className="boton inc" onClick={handleInc}>
                 INC
               </button>
-              </div>
-              <div> 
-                <button className="boton dec"
-                  onClick={handleDec}  
-                >
-                  DEC
-                </button>
-                <button className="boton cmp"
-                  onClick={handleCmp}
-                >
-                  CMP
-                </button>
-
-              </div>
+            </div>
+            <div>
+              <button className="boton dec" onClick={handleDec}>
+                DEC
+              </button>
+              <button className="boton cmp" onClick={handleCmp}>
+                CMP
+              </button>
+            </div>
           </div>
         </div>
         <div className="contenedor">
@@ -560,7 +726,6 @@ const App = () => {
         start={start} //can be react ref
         end={end} //or an id
       />
-
     </div>
   );
 };

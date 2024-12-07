@@ -11,7 +11,6 @@ import { useStore } from "../hooks/useStore"
 
   const { registros } = state;
 
-  console.log(registros)
 
   return (
     <div id="banco" className="banco-registros" ref={ref}>

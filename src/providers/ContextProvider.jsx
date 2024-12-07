@@ -5,90 +5,155 @@ import { GlobalContext } from "../context/context";
 export const GlobalProvider = ({ children }) => {
   // Define el estado global
   const [state, setState] = useState({
+    instrucciones: [],
     registros: [
-      { nombre: "AL", valor: 0 },
-      { nombre: "BL", valor: 0 },
-      { nombre: "CL", valor: 0 },
-      { nombre: "DL", valor: 0 },
+      { nombre: "AL", valor: '' },
+      { nombre: "BL", valor: '' },
+      { nombre: "CL", valor: '' },
+      { nombre: "DL", valor: '' },
     ],
     direcciones: [
-      { nombre: "0", valor: 0 },
-      { nombre: "1", valor: 0 },
-      { nombre: "2", valor: 0 },
-      { nombre: "3", valor: 0 },
-      { nombre: "4", valor: 0 },
-      { nombre: "5", valor: 0 },
-      { nombre: "6", valor: 0 },
-      { nombre: "7", valor: 0 },
-      { nombre: "8", valor: 0 },
-      { nombre: "9", valor: 0 },
-      { nombre: "10", valor: 0 }, 
-      { nombre: "11", valor: 0 },
-      { nombre: "12", valor: 0 },
-      { nombre: "13", valor: 0 },
-      { nombre: "14", valor: 0 },
-      { nombre: "15", valor: 0 },
-      { nombre: "16", valor: 0 },
-      { nombre: "17", valor: 0 },
-      { nombre: "18", valor: 0 },
-      { nombre: "19", valor: 0 },
-      { nombre: "20", valor: 0 },
-      { nombre: "21", valor: 0 },
-      { nombre: "22", valor: 0 },
-      { nombre: "23", valor: 0 },
-      { nombre: "24", valor: 0 },
-      { nombre: "25", valor: 0 },
-      { nombre: "26", valor: 0 },                                 
-      { nombre: "27", valor: 0 },
-      { nombre: "28", valor: 0 },
-      { nombre: "29", valor: 0 },
-      { nombre: "30", valor: 0 },
-      { nombre: "31", valor: 0 },
+      { nombre: "0", valor: ''},
+      { nombre: "1", valor: ''},
+      { nombre: "2", valor: ''},
+      { nombre: "3", valor: ''},
+      { nombre: "4", valor: ''},
+      { nombre: "5", valor: ''},
+      { nombre: "6", valor: ''},
+      { nombre: "7", valor: ''},
+      { nombre: "8", valor: ''},
+      { nombre: "9", valor: ''},
+      { nombre: "10", valor: '' }, 
+      { nombre: "11", valor: '' },
+      { nombre: "12", valor: '' },
+      { nombre: "13", valor: '' },
+      { nombre: "14", valor: '' },
+      { nombre: "15", valor: '' },
+      { nombre: "16", valor: '' },
+      { nombre: "17", valor: '' },
+      { nombre: "18", valor: '' },
+      { nombre: "19", valor: '' },
+      { nombre: "20", valor: '' },
+      { nombre: "21", valor: '' },
+      { nombre: "22", valor: '' },
+      { nombre: "23", valor: '' },
+      { nombre: "24", valor: '' },
+      { nombre: "25", valor: '' },
+      { nombre: "26", valor: '' },                                 
+      { nombre: "27", valor: '' },
+      { nombre: "28", valor: '' },
+      { nombre: "29", valor: '' },
+      { nombre: "30", valor: '' },
+      { nombre: "31", valor: '' },
     ],
     datos: [
-      { nombre: "0", valor: 0 },
-      { nombre: "1", valor: 0 },
-      { nombre: "2", valor: 0 },
-      { nombre: "3", valor: 0 },
-      { nombre: "4", valor: 0 },
-      { nombre: "5", valor: 0 },
-      { nombre: "6", valor: 0 },
-      { nombre: "7", valor: 0 },
-      { nombre: "8", valor: 0 },
-      { nombre: "9", valor: 0 },
-      { nombre: "10", valor: 0 }, 
-      { nombre: "11", valor: 0 },
-      { nombre: "12", valor: 0 },
-      { nombre: "13", valor: 0 },
-      { nombre: "14", valor: 0 },
-      { nombre: "15", valor: 0 },
-      { nombre: "16", valor: 0 },
-      { nombre: "17", valor: 0 },
-      { nombre: "18", valor: 0 },
-      { nombre: "19", valor: 0 },
-      { nombre: "20", valor: 0 },
-      { nombre: "21", valor: 0 },
-      { nombre: "22", valor: 0 },
-      { nombre: "23", valor: 0 },
-      { nombre: "24", valor: 0 },
-      { nombre: "25", valor: 0 },
-      { nombre: "26", valor: 0 },                                 
-      { nombre: "27", valor: 0 },
-      { nombre: "28", valor: 0 },
-      { nombre: "29", valor: 0 },
-      { nombre: "30", valor: 0 },
-      { nombre: "31", valor: 0 },
+      { nombre: "0", valor: '' },
+      { nombre: "1", valor: '' },
+      { nombre: "2", valor: '' },
+      { nombre: "3", valor: '' },
+      { nombre: "4", valor: '' },
+      { nombre: "5", valor: '' },
+      { nombre: "6", valor: '' },
+      { nombre: "7", valor: '' },
+      { nombre: "8", valor: '' },
+      { nombre: "9", valor: '' },
+      { nombre: "10", valor: '' }, 
+      { nombre: "11", valor: '' },
+      { nombre: "12", valor: '' },
+      { nombre: "13", valor: '' },
+      { nombre: "14", valor: '' },
+      { nombre: "15", valor: '' },
+      { nombre: "16", valor: '' },
+      { nombre: "17", valor: '' },
+      { nombre: "18", valor: '' },
+      { nombre: "19", valor: '' },
+      { nombre: "20", valor: '' },
+      { nombre: "21", valor: '' },
+      { nombre: "22", valor: '' },
+      { nombre: "23", valor: '' },
+      { nombre: "24", valor: '' },
+      { nombre: "25", valor: '' },
+      { nombre: "26", valor: '' },                                 
+      { nombre: "27", valor: '' },
+      { nombre: "28", valor: '' },
+      { nombre: "29", valor: '' },
+      { nombre: "30", valor: '' },
+      { nombre: "31", valor: '' },
     ],
-    mar: 0,
-    mbr: 0,
+    mar: '',
+    mbr: '',
     pc: 0,
-    ir: 0,
+    ir: '',
+    instruccionActual: 0,
   });
+
+  const actualizarProgramCounter = (valor) => {
+    setState({
+      ...state,
+      pc: valor,
+    });
+  };
+
+
+  const agregarInstruccion = (nombre, valor) => {
+    
+    //* buscar la instruccion en el array de instrucciones
+    const instruccion = state.direcciones.find((i) => i.nombre === nombre);
+
+    console.log(instruccion)
+
+    //* modificar el valor de la instruccion
+    instruccion.valor = valor;
+    //* crear un nuevo array de instrucciones
+    const instrucciones = state.instrucciones.map((i) => {
+      if (i.nombre === nombre) {
+        return instruccion;
+      }
+      return i;
+    });
+
+    //* actualizar el estado
+    setState({
+      ...state,
+      instrucciones,
+    });
+
+  };
+
+  const asignarRegistro = (registro, valor) => {
+    const registros = state.registros.map((r) => {
+      if (r.nombre === registro) {
+        r.valor = valor;
+      }
+      return r;
+    });
+
+    setState({
+      ...state,
+      registros,
+    });
+  };
+
+  const asignarDireccion = (direccion, valor) => {
+    const direcciones = state.direcciones.map((d) => {
+      if (d.nombre === direccion) {
+        d.valor = valor;
+      }
+      return d;
+    });
+
+    setState({
+      ...state,
+      direcciones,
+    });
+  }
 
   // Define el valor que se pasará a los consumidores
   const value = {
     state,
     setState,
+    actualizarProgramCounter,
+    agregarInstruccion,
   };
 
   return (
