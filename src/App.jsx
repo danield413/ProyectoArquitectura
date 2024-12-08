@@ -220,7 +220,6 @@ const App = () => {
                 value: result.value[0] + ", " + result.value[1],
                 direccionamiento: '0'
               };
-              console.log('inst move por registros', newInstruction);
               setInstructions([...instructions, newInstruction]);
             }
           });
@@ -277,7 +276,6 @@ const App = () => {
                 value: direccionBinaria + ", " + registro,
                 direccionamiento: '1'
               };
-              console.log('inst move por memoria', newInstruction);
               setInstructions([...instructions, newInstruction]);
             }
           });
@@ -299,7 +297,6 @@ const App = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const direccion = result.value[0];
-        console.log('miremos direcccion', direccion);
   
         if (direccion === "" || isNaN(direccion) || direccion < 0 || direccion > 31) {
           Swal.fire({
@@ -310,7 +307,6 @@ const App = () => {
           return;
         }
         const direccionBinaria = parseInt(direccion).toString(2).padStart(5, '0'); // Asegurarse de que tenga un ancho fijo, por ejemplo, 5 bits
-        console.log('miremos direcccion binaria', direccionBinaria);
         const newInstruction = {
           id: instructions.length + 1,
           tipo: "JMP",
@@ -590,9 +586,7 @@ const App = () => {
           }).then((result) => {
             if (result.isConfirmed) {
               const valor= parseInt(result.value[1]);
-              console.log('valor', valor);
               const registro = result.value[0];
-              console.log('registro', registro);
 
               if (isNaN(valor) || valor < 0 || valor > 31) {
                 Swal.fire({
@@ -618,7 +612,6 @@ const App = () => {
               }
                          
               const valorBinario = parseInt(valor).toString(2);
-              console.log('valor binario', valorBinario);
 
               const newInstruction = {
                 id: instructions.length + 1,
@@ -626,7 +619,6 @@ const App = () => {
                 value: registro + ", " + valorBinario,
                 direccionamiento: '1'
               };
-              console.log('inst cmp inmediato', newInstruction);
               setInstructions([...instructions, newInstruction]);
             }
           });
@@ -731,14 +723,12 @@ const App = () => {
       }
       if (tipo === "JMP") {
         const codopOperacion = codops.find((codop) => codop.nombre === "JMP").valor;
-      
-        const direccionBinaria = parseInt(instrucion.value).toString(2).padStart(5, '0'); // Asegurarse de que tenga un ancho fijo, por ejemplo, 5 bits
-      
+        const direccionBinaria = instrucion.value; 
+
         const valor = `${codopOperacion} ${direccionBinaria}`;
         let nombre = `${t}`;
 
         agregarInstruccion(nombre, valor);
-      
         t++;
       }
       if (tipo === "ADD") {
@@ -855,9 +845,7 @@ const App = () => {
         // direccionamiento inmediato
         else if (tipoDireccionamiento === '1') {
           const registros = instrucion.value.split(",");
-          console.log('registros', registros);
           const numero = registros[1];
-          console.log('numero', numero);
           const registro = identificadoresRegistros.find(
             (reg) => reg.nombre === registros[0].trim()).valor;
 
