@@ -33,6 +33,7 @@ const identificadoresRegistros = [
 ];
 
 const App = () => {
+  // useStore es un hook que permite acceder al estado global de la aplicación
   const { state, setState, agregarInstruccion } = useStore();
   const { registros, pc } = state;
 
@@ -162,43 +163,125 @@ const App = () => {
 
   //* ---
   const handleMove = () => {
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
+  
     Swal.fire({
       title: "MOV",
       html:
-        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+        '<select id="direccionamiento" class="swal2-select">' +
+        '<option value="registro">Por Registro</option>' +
+        '<option value="memoria">Por Memoria</option>' +
+        '</select>',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value,
-        ];
+        return document.getElementById("direccionamiento").value;
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.value[0] === "" || result.value[1] === "") {
-          return;
-        }
-
-        //si los registros no existen
-        if (
-          !registros.find((reg) => reg.nombre === result.value[0]) ||
-          !registros.find((reg) => reg.nombre === result.value[1])
-        ) {
+        const direccionamiento = result.value;
+  
+        if (direccionamiento === "registro") {
           Swal.fire({
-            title: "Error",
-            text: "Los registros no existen",
-            icon: "error",
+            title: "Por Registro",
+            html:
+              "Registros disponibles: " +
+              registrosDisponibles +
+              "<br>" +
+              '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+              '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById("swal-input1").value,
+                document.getElementById("swal-input2").value,
+              ];
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              if (result.value[0] === "" || result.value[1] === "") {
+                return;
+              }
+  
+              //si los registros no existen
+              if (
+                !registros.find((reg) => reg.nombre === result.value[0]) ||
+                !registros.find((reg) => reg.nombre === result.value[1])
+              ) {
+                Swal.fire({
+                  title: "Error",
+                  text: "Los registros no existen",
+                  icon: "error",
+                });
+                return;
+              }
+  
+              const newInstruction = {
+                id: instructions.length + 1,
+                tipo: "MOV",
+                value: result.value[0] + ", " + result.value[1],
+              };
+              setInstructions([...instructions, newInstruction]);
+            }
           });
-          return;
+        } else if (direccionamiento === "memoria") {
+          Swal.fire({
+            title: "Por Memoria",
+            html:
+            "<p>Direcciones de memoria disponibles: 32</p>" +
+            '<input id="swal-input1" class="swal2-input" placeholder="Dirección de Memoria">' +
+            "<br><br>" + 
+            "<p>Registros disponibles:</p>" +
+            "<ul>" +
+            registrosDisponibles +
+            "</ul>" +
+            '<input id="swal-input2" class="swal2-input" placeholder="Registro">',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById("swal-input1").value,
+                document.getElementById("swal-input2").value,
+              ];
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const direccionMemoria = parseInt(result.value[0]);
+              const registro = result.value[1];
+  
+              if (isNaN(direccionMemoria) || direccionMemoria < 0 || direccionMemoria > 31) {
+                Swal.fire({
+                  title: "Error",
+                  text: "La dirección de memoria debe ser un número entre 0 y 31",
+                  icon: "error",
+                });
+                return;
+              }
+  
+              if (registro === "") {
+                return;
+              }
+  
+              //si el registro no existe
+              if (!registros.find((reg) => reg.nombre === result.value[1])) {
+                Swal.fire({
+                  title: "Error",
+                  text: "El registro no existe",
+                  icon: "error",
+                });
+                return;
+              }
+  
+              const newInstruction = {
+                id: instructions.length + 1,
+                tipo: "MOV",
+                value: direccionMemoria + ", " + registro,
+              };
+              setInstructions([...instructions, newInstruction]);
+            }
+          });
         }
-
-        const newInstruction = {
-          id: instructions.length + 1,
-          tipo: "MOV",
-          value: result.value[0] + ", " + result.value[1],
-        };
-        setInstructions([...instructions, newInstruction]);
       }
     });
   };
@@ -215,20 +298,26 @@ const App = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.value[0] > 31) {
+        const direccion = result.value[0];
+  
+        if (direccion === "" || isNaN(direccion) || direccion < 0 || direccion > 31) {
+          Swal.fire({
+            title: "Error",
+            text: "La dirección debe ser un número entre 0 y 31",
+            icon: "error",
+          });
           return;
         }
-
+  
         const newInstruction = {
           id: instructions.length + 1,
           tipo: "JMP",
-          value: result.value[0],
+          value: direccion,
         };
         setInstructions([...instructions, newInstruction]);
       }
     });
   };
-
   //* LOAD R1, VALOR <-- direccionamiento inmediato
   const handleLoad = () => {
     //alerta con formulario
@@ -489,7 +578,7 @@ const App = () => {
 
         let valor = `${codopOperacion} ${registro} ${valorBinario}`;
         let nombre = `${t}`;
-        // console.log(nombre, valor);
+        console.log(nombre, valor);
         agregarInstruccion(nombre, valor);
 
         t++;
