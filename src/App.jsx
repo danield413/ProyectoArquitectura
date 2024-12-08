@@ -57,8 +57,6 @@ const App = () => {
 
   //* ADD R1, R2 <-- direccionamiento por registros
   const handleAdd = () => {
-    //alerta con formulario
-
     let registrosDisponibles = "";
     registros.forEach((reg) => {
       registrosDisponibles += reg.nombre + " ";
@@ -110,8 +108,6 @@ const App = () => {
 
   //* SUB R1, R2 <-- direccionamiento por registros
   const handleSub = () => {
-    //alerta con formulario
-
     let registrosDisponibles = "";
     registros.forEach((reg) => {
       registrosDisponibles += reg.nombre + " ";
@@ -161,7 +157,7 @@ const App = () => {
     });
   };
 
-  //* ---
+  //* Por registro o por memoria
   const handleMove = () => {
     let registrosDisponibles = "";
     registros.forEach((reg) => {
@@ -222,7 +218,9 @@ const App = () => {
                 id: instructions.length + 1,
                 tipo: "MOV",
                 value: result.value[0] + ", " + result.value[1],
+                direccionamiento: '0'
               };
+              console.log('inst move por registros', newInstruction);
               setInstructions([...instructions, newInstruction]);
             }
           });
@@ -262,8 +260,7 @@ const App = () => {
               if (registro === "") {
                 return;
               }
-  
-              //si el registro no existe
+
               if (!registros.find((reg) => reg.nombre === result.value[1])) {
                 Swal.fire({
                   title: "Error",
@@ -272,12 +269,15 @@ const App = () => {
                 });
                 return;
               }
-  
+              const direccionBinaria = parseInt(direccionMemoria).toString(2).padStart(5, '0'); // Asegurarse de que tenga un ancho fijo, por ejemplo, 5 bits
+
               const newInstruction = {
                 id: instructions.length + 1,
                 tipo: "MOV",
-                value: direccionMemoria + ", " + registro,
+                value: direccionBinaria + ", " + registro,
+                direccionamiento: '1'
               };
+              console.log('inst move por memoria', newInstruction);
               setInstructions([...instructions, newInstruction]);
             }
           });
@@ -286,7 +286,7 @@ const App = () => {
     });
   };
 
-  //* no tiene direccionamiento
+  //* inmediato
   const handleJmp = () => {
     //* indica el comienzo
     Swal.fire({
@@ -299,6 +299,7 @@ const App = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const direccion = result.value[0];
+        console.log('miremos direcccion', direccion);
   
         if (direccion === "" || isNaN(direccion) || direccion < 0 || direccion > 31) {
           Swal.fire({
@@ -308,11 +309,12 @@ const App = () => {
           });
           return;
         }
-  
+        const direccionBinaria = parseInt(direccion).toString(2).padStart(5, '0'); // Asegurarse de que tenga un ancho fijo, por ejemplo, 5 bits
+        console.log('miremos direcccion binaria', direccionBinaria);
         const newInstruction = {
           id: instructions.length + 1,
           tipo: "JMP",
-          value: direccion,
+          value: direccionBinaria,
         };
         setInstructions([...instructions, newInstruction]);
       }
@@ -320,8 +322,6 @@ const App = () => {
   };
   //* LOAD R1, VALOR <-- direccionamiento inmediato
   const handleLoad = () => {
-    //alerta con formulario
-
     let registrosDisponibles = "";
     registros.forEach((reg) => {
       registrosDisponibles += reg.nombre + " ";
@@ -370,8 +370,6 @@ const App = () => {
 
   //* MPY R1 R2 <-- direccionamiento por registros
   const handleMpy = () => {
-    //alerta con formulario
-
     let registrosDisponibles = "";
     registros.forEach((reg) => {
       registrosDisponibles += reg.nombre + " ";
@@ -397,7 +395,6 @@ const App = () => {
         if (result.value[0] === "" || result.value[1] === "") {
           return;
         }
-
         //si los registros no existen
         if (
           !registros.find((reg) => reg.nombre === result.value[0]) ||
@@ -488,7 +485,6 @@ const App = () => {
         if (result.value[0] === "") {
           return;
         }
-
         //si los registros no existen
         if (!registros.find((reg) => reg.nombre === result.value[0])) {
           Swal.fire({
@@ -509,45 +505,132 @@ const App = () => {
     });
   };
 
-  //* direccionamiento por registro (o inmediato <--falta)
+  //* direccionamiento por registro (o inmediato <--falta) TODO
   const handleCmp = () => {
+    let registrosDisponibles = "";
+    registros.forEach((reg) => {
+      registrosDisponibles += reg.nombre + " ";
+    });
+  
     Swal.fire({
       title: "CMP",
       html:
-        '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+        '<select id="direccionamiento" class="swal2-select">' +
+        '<option value="registro">Por Registro</option>' +
+        '<option value="inmediato">Inmediato</option>' +
+        '</select>',
       focusConfirm: false,
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value,
-        ];
+        return document.getElementById("direccionamiento").value;
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.value[0] === "" || result.value[1] === "") {
-          return;
-        }
-
-        //si los registros no existen
-        if (
-          !registros.find((reg) => reg.nombre === result.value[0]) ||
-          !registros.find((reg) => reg.nombre === result.value[1])
-        ) {
+        const direccionamiento = result.value;
+  
+        if (direccionamiento === "registro") {
           Swal.fire({
-            title: "Error",
-            text: "Los registros no existen",
-            icon: "error",
+            title: "Por Registro",
+            html:
+              "Registros disponibles: " +
+              registrosDisponibles +
+              "<br>" +
+              '<input id="swal-input1" class="swal2-input" placeholder="R1">' +
+              '<input id="swal-input2" class="swal2-input" placeholder="R2">',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById("swal-input1").value,
+                document.getElementById("swal-input2").value,
+              ];
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              if (result.value[0] === "" || result.value[1] === "") {
+                return;
+              }
+  
+              if (
+                !registros.find((reg) => reg.nombre === result.value[0]) ||
+                !registros.find((reg) => reg.nombre === result.value[1])
+              ) {
+                Swal.fire({
+                  title: "Error",
+                  text: "Los registros no existen",
+                  icon: "error",
+                });
+                return;
+              }
+  
+              const newInstruction = {
+                id: instructions.length + 1,
+                tipo: "CMP",
+                value: result.value[0] + ", " + result.value[1],
+                direccionamiento: '0'
+              };
+              setInstructions([...instructions, newInstruction]);
+            }
           });
-          return;
-        }
+        } else if (direccionamiento === "inmediato") {
+          Swal.fire({
+            title: "Inmediato",
+            html:
+              "<p>Registros disponibles:</p>" +
+              "<ul>" +
+              registrosDisponibles +
+              "</ul>" +
+              '<input id="swal-input1" class="swal2-input" placeholder="Registro">' +
+              '<input id="swal-input2" type="number" class="swal2-input" placeholder="Valor">',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById("swal-input1").value,
+                document.getElementById("swal-input2").value,
+              ];
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const valor= parseInt(result.value[1]);
+              console.log('valor', valor);
+              const registro = result.value[0];
+              console.log('registro', registro);
 
-        const newInstruction = {
-          id: instructions.length + 1,
-          tipo: "CMP",
-          value: result.value[0] + ", " + result.value[1],
-        };
-        setInstructions([...instructions, newInstruction]);
+              if (isNaN(valor) || valor < 0 || valor > 31) {
+                Swal.fire({
+                  title: "Error",
+                  text: "El valor debe ser un número entre 0 y 31",
+                  icon: "error",
+                });
+                return;
+              }
+
+              if (registro === "") {
+                return;
+              }
+  
+              //si el registro no existe
+              if (!registros.find((reg) => reg.nombre === result.value[0])) {
+                Swal.fire({
+                  title: "Error",
+                  text: "El registro no existe",
+                  icon: "error",
+                });
+                return;
+              }
+                         
+              const valorBinario = parseInt(valor).toString(2);
+              console.log('valor binario', valorBinario);
+
+              const newInstruction = {
+                id: instructions.length + 1,
+                tipo: "CMP",
+                value: registro + ", " + valorBinario,
+                direccionamiento: '1'
+              };
+              console.log('inst cmp inmediato', newInstruction);
+              setInstructions([...instructions, newInstruction]);
+            }
+          });
+        }
       }
     });
   };
@@ -607,8 +690,56 @@ const App = () => {
         t++;
       }
       if (tipo === "MOV") {
+        let tipoDireccionamiento = instrucion.direccionamiento;
+
+        let codopOperacion = codops.find(
+          (codop) => codop.nombre === instrucion.tipo
+        ).valor;
+        // direccionamiento por registro
+        if (tipoDireccionamiento === '0') {
+           
+          const registros = instrucion.value.split(",");
+  
+          const registro1 = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[0].trim()
+          ).valor;
+  
+          const registro2 = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[1].trim()
+          ).valor;
+  
+          const valor = `${codopOperacion} ${registro1} ${registro2} ${tipoDireccionamiento}`;
+  
+          let nombre = `${t}`;
+          agregarInstruccion(nombre, valor);
+  
+          t++;
+        }
+        // direccionamiento por memoria
+        else if (tipoDireccionamiento === '1') {
+          const registros = instrucion.value.split(",");
+          const direccion = registros[0];
+          const registro = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[1].trim()
+          ).valor;
+
+          const valor = `${codopOperacion} ${direccion} ${registro} ${tipoDireccionamiento}`;
+          let nombre = `${t}`;
+          agregarInstruccion(nombre, valor);
+          t++;
+        }
       }
       if (tipo === "JMP") {
+        const codopOperacion = codops.find((codop) => codop.nombre === "JMP").valor;
+      
+        const direccionBinaria = parseInt(instrucion.value).toString(2).padStart(5, '0'); // Asegurarse de que tenga un ancho fijo, por ejemplo, 5 bits
+      
+        const valor = `${codopOperacion} ${direccionBinaria}`;
+        let nombre = `${t}`;
+
+        agregarInstruccion(nombre, valor);
+      
+        t++;
       }
       if (tipo === "ADD") {
         //* direccionamiento por registros
@@ -696,27 +827,45 @@ const App = () => {
         t++;
       }
       if (tipo === "CMP") {
-        //* direccionamiento por registros
+        let tipoDireccionamiento = instrucion.direccionamiento;
+
         let codopOperacion = codops.find(
           (codop) => codop.nombre === instrucion.tipo
         ).valor;
+        // direccionamiento por registro
+        if (tipoDireccionamiento === '0') {
+           
+          const registros = instrucion.value.split(",");
+  
+          const registro1 = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[0].trim()
+          ).valor;
+  
+          const registro2 = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[1].trim()
+          ).valor;
+  
+          const valor = `${codopOperacion} ${registro1} ${registro2} ${tipoDireccionamiento}`;
+  
+          let nombre = `${t}`;
+          agregarInstruccion(nombre, valor);
+  
+          t++;
+        }
+        // direccionamiento inmediato
+        else if (tipoDireccionamiento === '1') {
+          const registros = instrucion.value.split(",");
+          console.log('registros', registros);
+          const numero = registros[1];
+          console.log('numero', numero);
+          const registro = identificadoresRegistros.find(
+            (reg) => reg.nombre === registros[0].trim()).valor;
 
-        const registros = instrucion.value.split(",");
-
-        const registro1 = identificadoresRegistros.find(
-          (reg) => reg.nombre === registros[0].trim()
-        ).valor;
-
-        const registro2 = identificadoresRegistros.find(
-          (reg) => reg.nombre === registros[1].trim()
-        ).valor;
-
-        const valor = `${codopOperacion} ${registro1} ${registro2}`;
-
-        let nombre = `${t}`;
-        agregarInstruccion(nombre, valor);
-
-        t++;
+          const valor = `${codopOperacion} ${registro} ${numero} ${tipoDireccionamiento}`;
+          let nombre = `${t}`;
+          agregarInstruccion(nombre, valor);
+          t++;
+        }
       }
     });
 
@@ -849,8 +998,8 @@ const App = () => {
         dashness={true}
         color="#ffe800"
         strokeWidth={2}
-        start={start} //can be react ref
-        end={end} //or an id
+        start={start} 
+        end={end} 
       />
     </div>
   );
