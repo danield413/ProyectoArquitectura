@@ -1064,6 +1064,11 @@ const App = () => {
       const tipo = direccion.valor.split(" ")[0];
       const nombreTipo = codops.find((codop) => codop.valor === tipo).nombre;
       
+
+      //* Dependiendo del tipo de operacion, realizamos todos los pasos correspondientes
+
+      //* También debemos creanos metodos en el contextProvider para cambiar los estados, de la memoria, ir, mbr, pc, y asi... para que se actualicen en la interfaz
+
       if (nombreTipo === "LOAD") {
 
       }
