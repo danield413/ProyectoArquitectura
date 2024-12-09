@@ -4,8 +4,8 @@ import { GlobalContext } from "../context/context"
 
 export const useStore = () => {
 
-    const { state, setState, agregarInstruccion } = useContext(GlobalContext);
+    const { state, setState, agregarInstruccion, actualizarProgramCounter } = useContext(GlobalContext);
 
-    return { state, setState, agregarInstruccion };
+    return { state, setState, agregarInstruccion, actualizarProgramCounter };
 
 }

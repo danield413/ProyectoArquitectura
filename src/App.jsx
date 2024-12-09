@@ -34,8 +34,8 @@ const identificadoresRegistros = [
 
 const App = () => {
   // useStore es un hook que permite acceder al estado global de la aplicación
-  const { state, setState, agregarInstruccion } = useStore();
-  const { registros, pc } = state;
+  const { state, setState, agregarInstruccion, actualizarProgramCounter } = useStore();
+  const { registros, pc, direcciones } = state;
 
   const [instructions, setInstructions] = useState([]);
   const [start, setStart] = useState(null);
@@ -859,6 +859,241 @@ const App = () => {
 
     //* 2. ejecutar las instrucciones con el ciclo de instruccion
 
+    direcciones.forEach((direccion) => {
+      //* por cada instruccion guardada en direcciones hago este ciclo
+      
+      if (direccion.valor === "") {
+        return;
+      }
+
+      //? FI - Captar instrucción UC (para todas)
+      const pasosFI = [
+        {
+          inicio: 'pc',
+          fin: 'mar'
+        },
+        {
+          inicio: 'uc',
+          fin: 'busControl'
+        },
+        {
+          inicio: 'busControl',
+          fin: 'mar'
+        },
+        {
+          inicio: 'mar',
+          fin: 'busDirecciones'
+        },
+        {
+          inicio: 'busDirecciones',
+          fin: 'memoria',
+        },
+        {
+          inicio: 'memoria',
+          fin: 'busDatos'
+        },
+        {
+          inicio: 'busDatos',
+          fin: 'mbr'
+        },
+        {
+          inicio: 'mbr',
+          fin: 'ir'
+        },
+        {
+          inicio: 'pc',
+          fin: 'alu'
+        },
+        {
+          inicio: 'alu',
+          fin: 'pc'
+        }
+      ]
+
+      //? LOAD
+      const pasosDI_LOAD = [
+        {
+          inicio: 'uc',
+          fin: 'busControl'
+        }
+      ]
+
+      const pasosFO_LOAD = []
+
+      const pasosWO_LOAD = [
+        {
+          inicio: 'ir',
+          fin: 'bancoRegistros'
+        },
+        {
+          inicio: 'uc',
+          fin: 'pc'
+        }
+      ]
+
+      //? MPY, ADD, SUB
+ 
+      //DECODE INSTRUCTION para MPY
+      const pasosDI_MPY = [
+        {
+          inicio: 'uc',
+          fin: 'busControl'
+        },
+        {
+          inicio: 'bancoRegistros',
+          fin: 'alu'
+        }
+      ]
+
+      // WRITE OUTPUT para MPY
+      const pasosWO_MPY = [
+        {
+          inicio: 'alu',
+          fin: 'bancoRegistros'
+        },
+        {
+          inicio: 'uc',
+          fin: 'pc'
+        }
+      ]
+
+      //? MOV CON DIRECCIONAMIENTO POR REGISTRO
+      // DECODE INSTRUCTION para MOV
+      const pasosDI_MOV = [
+        {
+          inicio: 'uc',
+          fin: 'ir'
+        }
+      ]
+
+      // FETCH OPERAND para MOV
+      const pasosFO_MOV = [
+        {
+          inicio: 'uc',
+          fin: 'bancoRegistros'
+        }
+      ]
+
+      // WRITE OUTPUT para MPY <-- va al mismo sitio
+      const pasosWO_MOV = [
+        {
+          inicio: 'bancoRegistros',
+          fin: 'bancoRegistros'
+        },
+        {
+          inicio: 'uc',
+          fin: 'pc'
+        }
+      ]
+
+      //? MOV CON DIRECCIONAMIENTO POR MEMORIA
+      const pasosCO_MOV_MEMORIA = [
+        {
+          inicio: 'memoria',
+          fin: 'busDirecciones'
+        },
+        {
+          inicio: 'busDirecciones',
+          fin: 'mar'
+        },
+      ]
+
+      const pasosWO_MOV_MEMORIA = [
+        {
+          inicio: 'bancoRegistros',
+          fin: 'mbr'
+        },
+        {
+          inicio: 'mbr',
+          fin: 'busDatos'
+        },
+        {
+          inicio: 'busDatos',
+          fin: 'memoria'
+        }
+      ]
+
+      //? JMP
+      const pasosDI_JMP = [
+        {
+          inicio: 'uc',
+          fin: 'ir'
+        },
+        {
+          inicio: 'ir',
+          fin: 'pc'
+        }
+      ]
+
+      //? INC, DEC
+      const pasosDI_INC_DEC = [
+        {
+          inicio: 'uc',
+          fin: 'ir'
+        }
+      ]
+
+      const pasosCO_INC_DEC = [
+        {
+          inicio: 'uc',
+          fin: 'bancoRegistros'
+        },
+        {
+          inicio: 'bancoRegistros',
+          fin: 'alu'
+        }
+      ]
+
+      const pasosEI_INC_DEC = [
+        {
+          inicio: 'alu',
+          fin: 'bancoRegistros'
+        }
+      ]
+
+      const pasosWO_INC_DEC = [
+        {
+          inicio: 'uc',
+          fin: 'pc'
+        }
+      ]
+      
+
+      
+      //*VERIFICAR QUE INSTRUCCION ES
+      const tipo = direccion.valor.split(" ")[0];
+      const nombreTipo = codops.find((codop) => codop.valor === tipo).nombre;
+      
+      if (nombreTipo === "LOAD") {
+
+      }
+
+      if (nombreTipo === "MPY") {
+
+      }
+
+      if (nombreTipo === "MOV") {
+
+      }
+
+      if (nombreTipo === "JMP") {
+
+      }
+
+      if (nombreTipo === "ADD" || nombreTipo === "SUB") {
+
+      }
+
+      if (nombreTipo === "INC" || nombreTipo === "DEC") {
+
+      }
+
+      if (nombreTipo === "CMP") {
+
+      }
+      
+    })
+
     /*
     FI - Captar instrucción UC
     DI - La instrucción la decodifica la UC
@@ -868,13 +1103,7 @@ const App = () => {
     WO - Escribir la salida 
     CI - Calcular siguiente instrucción
     */
-
-    // pasos.forEach((paso, index) => {
-    //   setTimeout(() => {
-    //     setStart(paso.inicio);
-    //     setEnd(paso.fin);
-    //   }, index * 6000);
-    // });
+    
   };
 
   return (
@@ -971,11 +1200,15 @@ const App = () => {
           </div>
         </div>
         <div className="bus-sistema">
-          <div className="direcciones" ref={busDireccionesRef}>
-            {" "}
+          <div id="busDirecciones" className="direcciones" ref={busDireccionesRef}>
+            Dir.
           </div>
-          <div className="datos" ref={busDatosRef}></div>
-          <div className="control" ref={busControlRef}></div>
+          <div id="busDatos" className="datos" ref={busDatosRef}>
+            Dat.
+          </div>
+          <div id="busControl" className="control" ref={busControlRef}>
+            Ctrl
+          </div>
         </div>
         <div>
           <Memoria ref={memoriaRef} />

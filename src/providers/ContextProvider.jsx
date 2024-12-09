@@ -85,12 +85,13 @@ export const GlobalProvider = ({ children }) => {
     pc: 0,
     ir: '',
     instruccionActual: 0,
+    alu: 0,
   });
 
-  const actualizarProgramCounter = (valor) => {
+  const actualizarProgramCounter = () => {
     setState({
       ...state,
-      pc: valor,
+      pc: state.pc + 1,
     });
   };
 
