@@ -95,6 +95,25 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
+  const asignarValorRegistro = ( registro, valor) => {
+    const registros = state.registros.map((r) => {
+      if (r.nombre === registro) {
+        r.valor = valor;
+      }
+      return r;
+    });
+
+    setState({
+      ...state,
+      registros,
+    });
+  }
+
+  const obtenerValorRegistro = (registro) => {
+    const re = state.registros.find((r) => r.nombre === registro);
+    return re.valor;
+  }
+
 
   const agregarInstruccion = (nombre, valor) => {
     
@@ -121,19 +140,7 @@ export const GlobalProvider = ({ children }) => {
 
   };
 
-  const asignarRegistro = (registro, valor) => {
-    const registros = state.registros.map((r) => {
-      if (r.nombre === registro) {
-        r.valor = valor;
-      }
-      return r;
-    });
-
-    setState({
-      ...state,
-      registros,
-    });
-  };
+  
 
   const asignarDireccion = (direccion, valor) => {
     const direcciones = state.direcciones.map((d) => {
@@ -155,6 +162,8 @@ export const GlobalProvider = ({ children }) => {
     setState,
     actualizarProgramCounter,
     agregarInstruccion,
+    asignarValorRegistro,
+    obtenerValorRegistro
   };
 
   return (

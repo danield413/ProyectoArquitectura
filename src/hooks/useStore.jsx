@@ -1,11 +1,22 @@
-import { useContext } from "react"
-import { GlobalContext } from "../context/context"
-
+import { useContext } from "react";
+import { GlobalContext } from "../context/context";
 
 export const useStore = () => {
+  const {
+    state,
+    setState,
+    agregarInstruccion,
+    actualizarProgramCounter,
+    asignarValorRegistro,
+    obtenerValorRegistro,
+  } = useContext(GlobalContext);
 
-    const { state, setState, agregarInstruccion, actualizarProgramCounter } = useContext(GlobalContext);
-
-    return { state, setState, agregarInstruccion, actualizarProgramCounter };
-
-}
+  return {
+    state,
+    setState,
+    agregarInstruccion,
+    actualizarProgramCounter,
+    asignarValorRegistro,
+    obtenerValorRegistro,
+  };
+};

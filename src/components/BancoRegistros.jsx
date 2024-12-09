@@ -13,7 +13,7 @@ import { useStore } from "../hooks/useStore"
 
 
   return (
-    <div id="banco" className="banco-registros" ref={ref}>
+    <div id="bancoRegistros" className="banco-registros" ref={ref}>
       {registros.map((registro, index) => (
         <div key={index} className="registro" style={{
           display: 'grid', gridTemplateRows: '1fr 1fr'
