@@ -9,6 +9,7 @@ export const useStore = () => {
     actualizarProgramCounter,
     asignarValorRegistro,
     obtenerValorRegistro,
+    asignarValorMemoria,
   } = useContext(GlobalContext);
 
   return {
@@ -18,5 +19,6 @@ export const useStore = () => {
     actualizarProgramCounter,
     asignarValorRegistro,
     obtenerValorRegistro,
+    asignarValorMemoria,
   };
 };

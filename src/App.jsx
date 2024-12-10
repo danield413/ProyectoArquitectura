@@ -41,6 +41,7 @@ const App = () => {
     actualizarProgramCounter, 
     asignarValorRegistro, 
     obtenerValorRegistro ,
+    asignarValorMemoria,
   } = useStore();
   const { registros, pc, direcciones } = state;
 
@@ -1268,6 +1269,58 @@ const App = () => {
 
       if (nombreTipo === "MOV") {
 
+        
+
+        //*obtener el tipo de direccionamiento
+        const tipoDireccionamiento = direccion.valor.split(" ")[3];
+
+        //* MOV CON DIRECCIONAMIENTO POR REGISTRO
+        if (tipoDireccionamiento === '0') {
+
+            pasosEjecutar.push(pasosFI);
+
+            pasosEjecutar.push(pasosDI_MOV);
+
+            //* 2 veces
+            pasosEjecutar.push(pasosFO_MOV);
+            pasosEjecutar.push(pasosFO_MOV);
+
+            const registros = direccion.valor.split(" ");
+            const registro1 = registros[1];
+            const registro2 = registros[2];
+
+            const nombreRegistro1 = identificadoresRegistros.find((reg) => reg.valor === registro1).nombre;
+            const nombreRegistro2 = identificadoresRegistros.find((reg) => reg.valor === registro2).nombre;
+
+            const valorRegistro2 = obtenerValorRegistro(nombreRegistro2);
+
+            asignarValorRegistro(nombreRegistro1, valorRegistro2);
+            asignarValorRegistro(nombreRegistro2, '');
+
+            pasosEjecutar.push(pasosWO_MOV);
+            
+
+        } else {
+          //* MOV CON DIRECCIONAMIENTO POR MEMORIA
+
+          pasosEjecutar.push(pasosFI);
+
+          // asignarValorMemoria
+          pasosEjecutar.push(pasosCO_MOV_MEMORIA);
+
+          // FETCH OPERAND
+          pasosEjecutar.push(pasosFO_MOV);
+
+          const registros = direccion.valor.split(" ");
+
+          //TODO: MIRARLO BIEN
+
+          // WRITE OUTPUT
+          pasosEjecutar.push(pasosWO_MOV_MEMORIA);
+
+
+        }
+
       }
 
       if (nombreTipo === "JMP") {
@@ -1450,7 +1503,7 @@ const App = () => {
           pasosEjecutar.push(pasosDI_CMP);
 
           //* FO: 1 VEZ
-          pasosEjecutar.push(pasosFO_CMP);
+          pasosEjecutar.push(pasosFO_CMP_INMEDIATO);
 
           const registro = direccion.valor.split(" ");
           const registro1 = registro[1];
@@ -1472,7 +1525,7 @@ const App = () => {
           asignarValorRegistro(nombreRegistro1, resultado);
 
           //* WO
-          pasosEjecutar.push(pasosWO_CMP);
+          pasosEjecutar.push(pasosWO_CMP_INMEDIATO);
 
         }
 

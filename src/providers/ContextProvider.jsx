@@ -110,6 +110,20 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
+  const asignarValorMemoria = ( direccion, valor) => {
+    const datos = state.datos.map((d) => {
+      if (d.nombre === direccion) {
+        d.valor = valor;
+      }
+      return d;
+    });
+
+    setState({
+      ...state,
+      datos,
+    });
+  }
+
   const obtenerValorRegistro = (registro) => {
     const re = state.registros.find((r) => r.nombre === registro);
     return re.valor;
@@ -164,7 +178,8 @@ export const GlobalProvider = ({ children }) => {
     actualizarProgramCounter,
     agregarInstruccion,
     asignarValorRegistro,
-    obtenerValorRegistro
+    obtenerValorRegistro,
+    asignarValorMemoria
   };
 
   return (
