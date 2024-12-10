@@ -1541,11 +1541,16 @@ const App = () => {
       setTimeout(() => {
         setStart(paso.inicio);
         setEnd(paso.fin);
-      }, index * 500);
+      }, index * 1000);
     })
 
 
   };
+
+
+  const handleClean = () => {
+    setInstructions([]);
+  }
 
   return (
     <div className="grid-principal">
@@ -1562,6 +1567,9 @@ const App = () => {
             <h2 style={{ marginBottom: "10px" }}>Instrucciones</h2>
             <button className="ejecutar" onClick={realizarSecuencia}>
               Ejecutar
+            </button>
+            <button className="limpiar" onClick={handleClean}>
+              Limpiar
             </button>
             <div
               style={{
@@ -1597,9 +1605,9 @@ const App = () => {
                 MOV
               </button>
 
-              <button className="boton jmp" onClick={handleJmp}>
+              {/* <button className="boton jmp" onClick={handleJmp}>
                 JMP
-              </button>
+              </button> */}
             </div>
             <div>
               <button className="boton add" onClick={handleAdd}>
@@ -1642,15 +1650,15 @@ const App = () => {
         </div>
         <div className="bus-sistema">
           <div id="busDirecciones" className="direcciones" ref={busDireccionesRef}>
-            Dir.
+            Dir
           </div>
           <div id="busDatos" className="datos" ref={busDatosRef}>
-            Dat.
+            Dat
           </div>
           <div id="busControl" className="control" ref={busControlRef}>
             Ctrl
           </div>
-        </div>
+        </div>  
         <div>
           <Memoria ref={memoriaRef} />
         </div>
@@ -1663,6 +1671,10 @@ const App = () => {
         start={start} 
         end={end} 
       />
+
+      <p
+        className="creditos"
+      >Créditos: Dani², Jhonatan Gómez </p>
     </div>
   );
 };
