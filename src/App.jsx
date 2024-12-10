@@ -1314,10 +1314,12 @@ const App = () => {
           const registros = direccion.valor.split(" ");
 
           //TODO: MIRARLO BIEN
+          //* deberia ser [memoria] y registro en vez de registro y [memoria]
+          //* ya que en [memoria] se guarda el valor del registro
+          //* no podemos guardar en registro el valor de memoria ya que no hay load para memoria y el dato siempre estará vacio
 
           // WRITE OUTPUT
           pasosEjecutar.push(pasosWO_MOV_MEMORIA);
-
 
         }
 
