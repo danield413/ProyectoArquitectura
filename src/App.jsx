@@ -875,6 +875,8 @@ const App = () => {
 
     //* 2. ejecutar las instrucciones con el ciclo de instruccion
 
+    let pasosEjecutar = [];
+
     direcciones.forEach((direccion) => {
       //* por cada instruccion guardada en direcciones hago este ciclo
       
@@ -1205,20 +1207,10 @@ const App = () => {
 
         //*FI
 
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI - decodificar la instruccion
-        pasosDI_LOAD.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
+        pasosEjecutar.push(pasosDI_LOAD);
 
         let instruccion = direccion.valor.split(" ");
         let codop = instruccion[0]; // no se interesa ya que se sabe que es LOAD
@@ -1231,35 +1223,19 @@ const App = () => {
         asignarValorRegistro(nombreRegistro, valor);
         
         //* WO
-        pasosWO_LOAD.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
+        pasosEjecutar.push(pasosWO_LOAD);
 
-        actualizarProgramCounter();
       }
 
       if (nombreTipo === "MPY") {
 
         //*FI
 
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI - decodificar la instruccion
 
-        pasosDI_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        })
+        pasosEjecutar.push(pasosDI_MPY);
 
         let instruccion = direccion.valor.split(" ");
         let codop = instruccion[0]; // no se interesa ya que se sabe que es LOAD
@@ -1286,14 +1262,7 @@ const App = () => {
         asignarValorRegistro(nombreRegistro1, resultado);
 
         //* WO
-        pasosWO_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
-
-        actualizarProgramCounter();
+        pasosEjecutar.push(pasosWO_MPY);
 
       }
 
@@ -1308,21 +1277,11 @@ const App = () => {
       if (nombreTipo === "ADD") {
         //*FI
 
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI - decodificar la instruccion
 
-        pasosDI_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        })
+        pasosEjecutar.push(pasosDI_MPY);
 
         let instruccion = direccion.valor.split(" ");
         let codop = instruccion[0]; // no se interesa ya que se sabe que es LOAD
@@ -1349,55 +1308,32 @@ const App = () => {
         asignarValorRegistro(nombreRegistro1, resultado);
 
         //* WO
-        pasosWO_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
-
-        actualizarProgramCounter();
+        pasosEjecutar.push(pasosWO_MPY);
 
       }
 
       if (nombreTipo === "SUB") {
 
         //*FI
-
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI - decodificar la instruccion
-
-        pasosDI_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        })
+        pasosEjecutar.push(pasosDI_MPY);
+        
 
         let instruccion = direccion.valor.split(" ");
         let codop = instruccion[0]; // no se interesa ya que se sabe que es LOAD
         let registro1 = instruccion[1];
         let registro2 = instruccion[2];
 
-        console.log("instruccion", instruccion);
 
         let nombreRegistro1 = identificadoresRegistros.find((reg) => reg.valor === registro1).nombre;
         let nombreRegistro2 = identificadoresRegistros.find((reg) => reg.valor === registro2).nombre;
 
-        console.log("nombreRegistro1", nombreRegistro1);
-        console.log("nombreRegistro2", nombreRegistro2);
 
         let valorRegistro1 = obtenerValorRegistro(nombreRegistro1);
         let valorRegistro2 = obtenerValorRegistro(nombreRegistro2);
 
-        console.log("valorRegistro1", );
-        console.log("valorRegistro2", parseInt(valorRegistro2, 2));
 
         const valorDecimal = parseInt(valorRegistro1, 2) - parseInt(valorRegistro2, 2);
         let resultado = `${valorDecimal.toString(2)}`;
@@ -1405,41 +1341,19 @@ const App = () => {
         asignarValorRegistro(nombreRegistro1, resultado);
 
         //* WO
-        pasosWO_MPY.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
-
-        actualizarProgramCounter();
+        pasosEjecutar.push(pasosWO_MPY);
 
       }
 
       if (nombreTipo === "INC") {
         //* FI
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI
-        pasosDI_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosDI_INC_DEC);
 
         //* CO
-        pasosCO_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosCO_INC_DEC);
 
         const registro = direccion.valor.split(" ")[1];
         const nombreRegistro = identificadoresRegistros.find((reg) => reg.valor === registro).nombre;
@@ -1451,50 +1365,23 @@ const App = () => {
         asignarValorRegistro(nombreRegistro, resultado);
 
         //* EI
-        pasosEI_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
+        pasosEjecutar.push(pasosEI_INC_DEC);
 
         //* WO
-        pasosWO_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
-
-        actualizarProgramCounter();
+        pasosEjecutar.push(pasosWO_INC_DEC);
 
       } 
 
       if (nombreTipo === "DEC") {
 
         //* FI
-        pasosFI.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosFI);
 
         //* DI
-        pasosDI_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosDI_INC_DEC);
 
         //* CO
-        pasosCO_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 500);
-        });
+        pasosEjecutar.push(pasosCO_INC_DEC);
 
         const registro = direccion.valor.split(" ")[1];
         const nombreRegistro = identificadoresRegistros.find((reg) => reg.valor === registro).nombre;
@@ -1506,41 +1393,103 @@ const App = () => {
         asignarValorRegistro(nombreRegistro, resultado);
 
         //* EI
-        pasosEI_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
+        pasosEjecutar.push(pasosEI_INC_DEC);
 
         //* WO
-        pasosWO_INC_DEC.forEach((paso, index) => {
-          setTimeout(() => {
-            setStart(paso.inicio);
-            setEnd(paso.fin);
-          }, index * 1000);
-        });
-
-        actualizarProgramCounter();
+        pasosEjecutar.push(pasosWO_INC_DEC);
 
       }
 
       if (nombreTipo === "CMP") {
 
+        //*obtener el tipo de direccionamiento
+        const tipoDireccionamiento = direccion.valor.split(" ")[3];
+
+        //* CMP CON DIRECCIONAMIENTO POR REGISTRO
+        if (tipoDireccionamiento === '0') {
+
+            //* FI
+
+            pasosEjecutar.push(pasosFI);
+
+            //* DI
+            pasosEjecutar.push(pasosDI_CMP);
+
+            //* FO: DOS VECES
+            pasosEjecutar.push(pasosFO_CMP);
+
+            pasosEjecutar.push(pasosFO_CMP);
+
+            const registro1 = direccion.valor.split(" ")[1];
+            const registro2 = direccion.valor.split(" ")[2];
+
+            const nombreRegistro1 = identificadoresRegistros.find((reg) => reg.valor === registro1).nombre;
+            const nombreRegistro2 = identificadoresRegistros.find((reg) => reg.valor === registro2).nombre;
+
+            const valorRegistro1 = obtenerValorRegistro(nombreRegistro1);
+            const valorRegistro2 = obtenerValorRegistro(nombreRegistro2);
+
+            const valorDecimal1 = parseInt(valorRegistro1, 2);
+            const valorDecimal2 = parseInt(valorRegistro2, 2);
+
+            let resultado = `${valorDecimal1 === valorDecimal2 ? '1' : '0'}`;
+
+            asignarValorRegistro(nombreRegistro1, resultado);
+
+            //* WO
+            pasosEjecutar.push(pasosWO_CMP);
+
+        } else {
+          //* CMP CON DIRECCIONAMIENTO INMEDIATO
+
+          //* FI
+
+          pasosEjecutar.push(pasosFI);
+
+          //* DI
+          pasosEjecutar.push(pasosDI_CMP);
+
+          //* FO: 1 VEZ
+          pasosEjecutar.push(pasosFO_CMP);
+
+          const registro = direccion.valor.split(" ");
+          const registro1 = registro[1];
+          const numero = registro[3];
+
+          console.log("registro", registro);
+
+          const nombreRegistro1 = identificadoresRegistros.find((reg) => reg.valor === registro1).nombre;
+
+          const valorRegistro1 = obtenerValorRegistro(nombreRegistro1);
+
+          console.log({
+            valorRegistro1,
+            numero
+          })
+          
+          let resultado = `${valorRegistro1 === numero ? '1' : '0'}`;
+
+          asignarValorRegistro(nombreRegistro1, resultado);
+
+          //* WO
+          pasosEjecutar.push(pasosWO_CMP);
+
+        }
+
       }
       
     })
 
-    /*
-    FI - Captar instrucción UC
-    DI - La instrucción la decodifica la UC
-    CO - Calcular la dirección del operando
-    FO - Captar el operando
-    EI - Ejecutar la instrucción lo hace la (ALU, CPU)
-    WO - Escribir la salida 
-    CI - Calcular siguiente instrucción
-    */
-    
+    actualizarProgramCounter(t);
+
+    pasosEjecutar.flat().forEach((paso, index) => {
+      setTimeout(() => {
+        setStart(paso.inicio);
+        setEnd(paso.fin);
+      }, index * 500);
+    })
+
+
   };
 
   return (

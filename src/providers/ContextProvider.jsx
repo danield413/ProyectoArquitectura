@@ -88,10 +88,11 @@ export const GlobalProvider = ({ children }) => {
     alu: 0,
   });
 
-  const actualizarProgramCounter = () => {
+  const actualizarProgramCounter = (pcNuevo) => {
+    console.log('actualizarProgramCounter', state.pc)
     setState({
       ...state,
-      pc: state.pc + 1,
+      pc: pcNuevo,
     });
   };
 
