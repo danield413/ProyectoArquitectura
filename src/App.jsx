@@ -12,6 +12,9 @@ import { IO } from "./components/IO";
 import Swal from "sweetalert2";
 import Xarrow from "react-xarrows";
 import { useStore } from "./hooks/useStore";
+import { pasosDI_LOAD, pasosFI, pasosWO_LOAD, pasosDI_MPY, pasosWO_MPY, pasosDI_MOV, pasosFO_MOV, pasosWO_MOV, pasosCO_MOV_MEMORIA, pasosWO_MOV_MEMORIA, pasosDI_JMP, pasosDI_INC_DEC, pasosCO_INC_DEC, pasosEI_INC_DEC, pasosWO_INC_DEC, pasosDI_CMP, pasosFO_CMP, pasosWO_CMP, pasosFO_CMP_INMEDIATO, pasosWO_CMP_INMEDIATO } from "./utils/pasos"
+import { enqueueSnackbar, SnackbarProvider } from "notistack"
+
 
 const codops = [
   { nombre: "LOAD", valor: "0000" },
@@ -650,6 +653,7 @@ const App = () => {
 
     let t = 0;
 
+
     instructions.forEach((instrucion) => {
       const { tipo } = instrucion;
 
@@ -878,322 +882,16 @@ const App = () => {
 
     let pasosEjecutar = [];
 
-    direcciones.forEach((direccion) => {
+    let programCounter = 0;
+
+    const direccionesRecorrer = direcciones.filter((direccion) => direccion.valor !== "");
+
+    //* 0,1,2,3,4
+    for (let i = 0; i < direccionesRecorrer.length; i++) {
       //* por cada instruccion guardada en direcciones hago este ciclo
       
-      if (direccion.valor === "") {
-        return;
-      }
-
-      //? FI - Captar instrucción UC (para todas)
-      const pasosFI = [
-        // este no, sería solo que el pc 'cambie de color' para indicar que se está ejecutando
-        {
-          inicio: 'pc',
-          fin: 'mar'
-        },
-        // aqui empezaría lo de las flechas
-        {
-          inicio: 'uc',
-          fin: 'mar'
-        },
-        {
-          inicio: 'mar',
-          fin: 'busDirecciones'
-        },
-        {
-          inicio: 'busDirecciones',
-          fin: 'memoria',
-        },
-        {
-          inicio: 'memoria',
-          fin: 'busDatos'
-        },
-        {
-          inicio: 'busDatos',
-          fin: 'mbr'
-        },
-        {
-          inicio: 'mbr',
-          fin: 'ir'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        },
-        {
-          inicio: 'pc',
-          fin: 'alu'
-        },
-        {
-          inicio: 'alu',
-          fin: 'pc'
-        }
-      ]
-
-      //? LOAD
-      const pasosDI_LOAD = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        }
-      ]
-
-      //? podría ser una función que le entre el registro y el valor?
-      const pasosWO_LOAD = [
-        {
-          inicio: 'ir',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? MPY, ADD, SUB
- 
-      //DECODE INSTRUCTION para MPY¿
-      const pasosDI_MPY = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        },
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'bancoRegistros',
-          fin: 'alu'
-        }
-      ]
-
-      // WRITE OUTPUT para MPY
-      const pasosWO_MPY = [
-        {
-          inicio: 'alu',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? MOV CON DIRECCIONAMIENTO POR REGISTRO
-      // DECODE INSTRUCTION para MOV
-      const pasosDI_MOV = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        }
-      ]
-
-      // FETCH OPERAND para MOV
-      const pasosFO_MOV = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'bancoRegistros'
-        },
-      ]
-
-      // WRITE OUTPUT para MOV <-- va al mismo sitio
-      const pasosWO_MOV = [
-        {
-          inicio: 'bancoRegistros',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? MOV CON DIRECCIONAMIENTO POR MEMORIA
-      const pasosCO_MOV_MEMORIA = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'memoria'
-        }, 
-        {
-          inicio: 'memoria',
-          fin: 'busDirecciones'
-        },
-        {
-          inicio: 'busDirecciones',
-          fin: 'mar'
-        },
-      ]
-
-      const pasosWO_MOV_MEMORIA = [
-        {
-          inicio: 'bancoRegistros',
-          fin: 'mbr'
-        },
-        {
-          inicio: 'mbr',
-          fin: 'busDatos'
-        },
-        {
-          inicio: 'busDatos',
-          fin: 'memoria'
-        }, 
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? JMP
-      const pasosDI_JMP = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        },
-        {
-          inicio: 'ir',
-          fin: 'pc'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? INC, DEC
-      const pasosDI_INC_DEC = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        }, 
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        }
-      ]
-
-      const pasosCO_INC_DEC = [
-        {
-          inicio: 'uc',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'bancoRegistros',
-          fin: 'alu'
-        }
-      ]
-
-      const pasosEI_INC_DEC = [
-        {
-          inicio: 'alu',
-          fin: 'bancoRegistros'
-        }
-      ]
-
-      const pasosWO_INC_DEC = [
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
+      const direccion = direccionesRecorrer[i];
       
-      // ? CMP
-      //? CMP CON DIRECCIONAMIENTO POR REGISTRO
-      const pasosDI_CMP = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        }
-      ]
-
-      // FETCH OPERAND para CMP, se hace 2 veces
-      const pasosFO_CMP = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'bancoRegistros',
-          fin: 'alu'
-        }
-      ]
-
-      // WRITE OUTPUT para CMP <-- se hace 1 vez, el resultado de la comparación se va a guardar
-      // en el primer registro
-      const pasosWO_CMP = [
-        {
-          inicio: 'alu',
-          fin: 'bancoRegistros'
-        },
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
-
-      //? CMP CON DIRECCIONAMIENTO INMEIDATO
-      // aquí se hace 1 vez el FETCH OPERAND de CMP
-      const pasosFO_CMP_INMEDIATO = [
-        {
-          inicio: 'uc',
-          fin: 'busControl'
-        },
-        {
-          inicio: 'busControl',
-          fin: 'ir'
-        },
-        {
-          inicio: 'ir',
-          fin: 'alu'
-        }
-      ]
-      const pasosWO_CMP_INMEDIATO = [
-        {
-          inicio: 'alu',
-          fin: 'bancoRegistros'
-        }, 
-        {
-          inicio: 'uc',
-          fin: 'pc'
-        }
-      ]
       
       //*VERIFICAR QUE INSTRUCCION ES
       const tipo = direccion.valor.split(" ")[0];
@@ -1205,6 +903,10 @@ const App = () => {
       //* También debemos creanos metodos en el contextProvider para cambiar los estados, de la memoria, ir, mbr, pc, y asi... para que se actualicen en la interfaz
 
       if (nombreTipo === "LOAD") {
+
+        enqueueSnackbar("LOAD EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //*FI
 
@@ -1226,9 +928,15 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_LOAD);
 
+        programCounter++;
+
       }
 
       if (nombreTipo === "MPY") {
+
+        enqueueSnackbar("MPY EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //*FI
 
@@ -1265,11 +973,15 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_MPY);
 
+        programCounter++;
+
       }
 
       if (nombreTipo === "MOV") {
 
-        
+        enqueueSnackbar("MOV EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //*obtener el tipo de direccionamiento
         const tipoDireccionamiento = direccion.valor.split(" ")[3];
@@ -1299,8 +1011,13 @@ const App = () => {
 
             pasosEjecutar.push(pasosWO_MOV);
             
+            programCounter++;
 
         } else {
+
+          enqueueSnackbar("MOV EJECUTADO!", {
+            variant: "success", // Usa "default" para estilos personalizados
+          });
           //* MOV CON DIRECCIONAMIENTO POR MEMORIA
 
           pasosEjecutar.push(pasosFI);
@@ -1321,11 +1038,17 @@ const App = () => {
           // WRITE OUTPUT
           pasosEjecutar.push(pasosWO_MOV_MEMORIA);
 
+
         }
 
       }
 
       if (nombreTipo === "JMP") {
+
+        enqueueSnackbar("JMP EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
+
         //* FI - Captar instrucción
         pasosEjecutar.push(pasosFI);
       
@@ -1335,8 +1058,11 @@ const App = () => {
         let instruccion = direccion.valor.split(" ");
         let direccionSalto = instruccion[1];
       
-        console.log("instruccion", instruccion);
-      
+        console.log("direccionSalto", direccionSalto);
+        let numero = parseInt(direccionSalto, 2);
+        
+        programCounter = numero;
+
         //* EI - Ejecutar la instrucción (actualizar el PC con la nueva dirección)
         const pasosEI_JMP = [
           {
@@ -1364,9 +1090,14 @@ const App = () => {
         ];
       
         pasosEjecutar.push(pasosCI_JMP);
+
+
       }
 
       if (nombreTipo === "ADD") {
+        enqueueSnackbar("ADD EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
         //*FI
 
         pasosEjecutar.push(pasosFI);
@@ -1401,9 +1132,13 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_MPY);
 
+
       }
 
       if (nombreTipo === "SUB") {
+        enqueueSnackbar("SUB EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //*FI
         pasosEjecutar.push(pasosFI);
@@ -1434,9 +1169,13 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_MPY);
 
+
       }
 
       if (nombreTipo === "INC") {
+        enqueueSnackbar("INC EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
         //* FI
         pasosEjecutar.push(pasosFI);
 
@@ -1461,9 +1200,13 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_INC_DEC);
 
+
       } 
 
       if (nombreTipo === "DEC") {
+        enqueueSnackbar("DEC EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //* FI
         pasosEjecutar.push(pasosFI);
@@ -1489,9 +1232,13 @@ const App = () => {
         //* WO
         pasosEjecutar.push(pasosWO_INC_DEC);
 
+
       }
 
       if (nombreTipo === "CMP") {
+        enqueueSnackbar("CMP EJECUTADO!", {
+          variant: "success", // Usa "default" para estilos personalizados
+        });
 
         //*obtener el tipo de direccionamiento
         const tipoDireccionamiento = direccion.valor.split(" ")[3];
@@ -1530,7 +1277,9 @@ const App = () => {
             //* WO
             pasosEjecutar.push(pasosWO_CMP);
 
+
         } else {
+          
           //* CMP CON DIRECCIONAMIENTO INMEDIATO
 
           //* FI
@@ -1565,19 +1314,25 @@ const App = () => {
           //* WO
           pasosEjecutar.push(pasosWO_CMP_INMEDIATO);
 
+
         }
 
       }
       
-    })
+    }
 
-    actualizarProgramCounter(t);
+    console.log("programCounter", programCounter);
+    if(programCounter === 0) {
+      actualizarProgramCounter(programCounter);
+    } else {
+      actualizarProgramCounter(t);
+    }
 
     pasosEjecutar.flat().forEach((paso, index) => {
       setTimeout(() => {
         setStart(paso.inicio);
         setEnd(paso.fin);
-      }, index * 1000);
+      }, index * 300);
     })
 
 
@@ -1590,6 +1345,7 @@ const App = () => {
 
   return (
     <div className="grid-principal">
+    <SnackbarProvider />
       <div className="grid">
         <div
           style={{
@@ -1610,8 +1366,9 @@ const App = () => {
             <div
               style={{
                 border: "3px solid #ff5733",
-                height: "300px",
+                height: "260px",
                 borderRadius: "10px",
+                overflowY: "auto",
               }}
             >
               {instructions.map((inst, index) => (

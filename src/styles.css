@@ -1,0 +1,8 @@
+.custom-success-snackbar {
+    background-color: #4caf50; /* Verde éxito */
+    color: white;             /* Texto blanco */
+    font-size: 16px;          /* Tamaño de fuente */
+    border-radius: 4px;       /* Esquinas redondeadas */
+    padding: 10px;            /* Espaciado interno */
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+  }
