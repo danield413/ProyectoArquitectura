@@ -1326,7 +1326,44 @@ const App = () => {
       }
 
       if (nombreTipo === "JMP") {
-
+        //* FI - Captar instrucción
+        pasosEjecutar.push(pasosFI);
+      
+        //* DI - Decodificar la instrucción
+        pasosEjecutar.push(pasosDI_JMP);
+      
+        let instruccion = direccion.valor.split(" ");
+        let direccionSalto = instruccion[1];
+      
+        console.log("instruccion", instruccion);
+      
+        //* EI - Ejecutar la instrucción (actualizar el PC con la nueva dirección)
+        const pasosEI_JMP = [
+          {
+            inicio: 'ir',
+            fin: 'pc'
+          },
+          {
+            inicio: 'uc',
+            fin: 'pc'
+          }
+        ];
+      
+        pasosEjecutar.push(pasosEI_JMP);
+            
+        //* CI - Calcular siguiente instrucción (actualizar el PC)
+        const pasosCI_JMP = [
+          {
+            inicio: 'pc',
+            fin: 'busDirecciones'
+          },
+          {
+            inicio: 'busDirecciones',
+            fin: 'memoria'
+          }
+        ];
+      
+        pasosEjecutar.push(pasosCI_JMP);
       }
 
       if (nombreTipo === "ADD") {
@@ -1339,7 +1376,6 @@ const App = () => {
         pasosEjecutar.push(pasosDI_MPY);
 
         let instruccion = direccion.valor.split(" ");
-        let codop = instruccion[0]; // no se interesa ya que se sabe que es LOAD
         let registro1 = instruccion[1];
         let registro2 = instruccion[2];
 
@@ -1605,9 +1641,9 @@ const App = () => {
                 MOV
               </button>
 
-              {/* <button className="boton jmp" onClick={handleJmp}>
+              <button className="boton jmp" onClick={handleJmp}>
                 JMP
-              </button> */}
+              </button>
             </div>
             <div>
               <button className="boton add" onClick={handleAdd}>
